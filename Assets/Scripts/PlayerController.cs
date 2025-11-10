@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Services;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,7 +13,11 @@ public class PlayerController : MonoBehaviour
     
     private Rigidbody2D _rb;
     private InputAction _move;
+    private InputAction _fire;
+    private InputAction _despawnTest;
     private Vector2 _moveInput;
+
+    private readonly Stack<GameObject> _bulletDespawnTestStack = new();
 
     private void OnEnable()
     {
@@ -23,10 +29,14 @@ public class PlayerController : MonoBehaviour
         // Input Action
         var map = inputActions.FindActionMap("PlayerCharacter");
         _move = map.FindAction("Move");
+        _fire = map.FindAction("Fire");
+        _despawnTest = map.FindAction("Despawn");
         
         map.Enable();
         _move.performed += OnMove;
         _move.canceled += OnMove;
+        _fire.performed += OnFire;
+        _despawnTest.performed += OnDespawnTest;
     }
 
     private void FixedUpdate()
@@ -52,5 +62,20 @@ public class PlayerController : MonoBehaviour
     private void OnMove(InputAction.CallbackContext ctx)
     {
         _moveInput = ctx.ReadValue<Vector2>();
+    }
+
+    private void OnFire(InputAction.CallbackContext ctx)
+    {
+        var go = GameServices.Spawner.Spawn("Bullet", new Vector3(Random.Range(-Bound, Bound), Random.Range(-Bound, Bound), 0));
+        _bulletDespawnTestStack.Push(go);
+    }
+
+    private void OnDespawnTest(InputAction.CallbackContext ctx)
+    {
+        if (_bulletDespawnTestStack.Count > 0)
+        {
+            var go = _bulletDespawnTestStack.Pop();
+            GameServices.Spawner.Despawn(go);
+        }
     }
 }
