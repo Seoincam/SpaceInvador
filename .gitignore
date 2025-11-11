@@ -101,3 +101,4 @@ InitTestScene*.unity*
 # Rider / JetBrains IDE
 .idea/
 *.iml
+.DS_Store
