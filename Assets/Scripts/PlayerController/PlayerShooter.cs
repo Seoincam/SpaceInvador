@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using DefaultNamespace;
 using Services;
 using UnityEngine;
@@ -8,18 +9,23 @@ namespace PlayerController
     {
         void SetAimInput(Vector2 aimInput);
         void TryFire();
+        void TryRetrieve();
     }
     
     public class PlayerShooter : MonoBehaviour, IPlayerShooter
     {
+        [SerializeField] private int maxBulletCount = 4;
+        
         private Camera _cam;
         
         private Vector2 _aimInput;
         private Vector2 _aimDirection;
+        private Queue<IBullet> _bullets;
 
         private void Awake()
         {
             _cam = Camera.main;
+            _bullets = new Queue<IBullet>(maxBulletCount);
         }
 
         private void Update()
@@ -36,15 +42,28 @@ namespace PlayerController
 
         public void TryFire()
         {
-            Debug.Log("Try Fire: " + _aimDirection);
-            Shoot(_aimDirection);
+            if (_bullets.Count < maxBulletCount)
+            {
+                Shoot(_aimDirection);
+            }
+        }
+
+        public void TryRetrieve()
+        {
+            if (_bullets.TryDequeue(out var bullet))
+            {
+                GameServices.Spawner.Despawn(bullet.GameObject);
+            }
         }
 
         private void Shoot(Vector2 direction)
         {
             var bulletGo = GameServices.Spawner.Spawn("bullet", transform.position);
             if (bulletGo.TryGetComponent(out IBullet bullet))
+            {
+                _bullets.Enqueue(bullet);
                 bullet.Shoot(direction);
+            }
         }
     }
 }

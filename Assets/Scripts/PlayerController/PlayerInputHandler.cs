@@ -21,6 +21,7 @@ namespace PlayerController
             var move = inputActions.FindAction("Move");
             var look = inputActions.FindAction("Look");
             var fire = inputActions.FindAction("Fire");
+            var retrieve =  inputActions.FindAction("Retrieve");
             
             map.Enable();
             
@@ -29,6 +30,7 @@ namespace PlayerController
             look.performed += OnLook;
             look.canceled += OnLook;
             fire.performed += OnFire;
+            retrieve.performed += OnRetrieve;
         }
 
         private void OnMove(InputAction.CallbackContext ctx)
@@ -46,6 +48,11 @@ namespace PlayerController
         private void OnFire(InputAction.CallbackContext ctx)
         {
             _shooter.TryFire();
+        }
+
+        private void OnRetrieve(InputAction.CallbackContext ctx)
+        {
+            _shooter.TryRetrieve();
         }
     }
 }
