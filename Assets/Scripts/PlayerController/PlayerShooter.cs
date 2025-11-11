@@ -1,3 +1,4 @@
+using DefaultNamespace;
 using Services;
 using UnityEngine;
 
@@ -42,10 +43,8 @@ namespace PlayerController
         private void Shoot(Vector2 direction)
         {
             var bulletGo = GameServices.Spawner.Spawn("bullet", transform.position);
-            if (bulletGo.TryGetComponent(out Rigidbody2D rb))
-            {
-                rb.linearVelocity = direction;
-            }
+            if (bulletGo.TryGetComponent(out IBullet bullet))
+                bullet.Shoot(direction);
         }
     }
 }
