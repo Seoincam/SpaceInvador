@@ -102,3 +102,6 @@ InitTestScene*.unity*
 .idea/
 *.iml
 .DS_Store
+Assets/.DS_Store
+Assets/Resources/.DS_Store
+Assets/Scripts/.DS_Store
