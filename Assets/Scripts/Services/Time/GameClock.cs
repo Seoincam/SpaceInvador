@@ -15,12 +15,13 @@ namespace Services.Time
         public double Time => time;
         public float DeltaTime => deltaTime;
         public bool IsPaused => isPaused;
+        public bool IsStopped => IsPaused || TimeScale <= 0f;
 
         public float TimeScale { get => timeScale; set => timeScale = value; }
         
         public void Tick(float unscaledDeltaTime)
         {
-            if (IsPaused || TimeScale <= 0)
+            if (IsStopped)
             {
                 deltaTime = 0f;
                 return;
