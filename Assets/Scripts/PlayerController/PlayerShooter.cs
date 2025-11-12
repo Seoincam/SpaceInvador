@@ -14,7 +14,7 @@ namespace PlayerController
         void Retrieve(IBullet bullet);
     }
     
-    public class PlayerShooter : MonoBehaviour, IPlayerShooter, IDamageable
+    public class PlayerShooter : MonoBehaviour, IPlayerShooter, IDamageable, IClockAware
     {
         [SerializeField] private int maxBulletCount = 4;
         [SerializeField] private Transform bulletSafeArea;
@@ -24,16 +24,16 @@ namespace PlayerController
         [SerializeField] private Cooldown fireCd;
         
         private Camera _cam;
-        private IClock _clock;
         
         private Vector2 _aimInput;
         private Vector2 _aimDirection;
         private List<IBullet> _bullets;
+        
+        public IClock Clock { get; set; }
 
         private void Awake()
         {
             _cam = Camera.main;
-            _clock = TimeService.Instance.GamePlayClock;
 
             fireCd = new Cooldown(fireCdDuration);
             _bullets = new List<IBullet>(maxBulletCount);
@@ -53,7 +53,7 @@ namespace PlayerController
 
         public void TryFire()
         {
-            if (!fireCd.Ready(_clock) || _bullets.Count >= maxBulletCount)
+            if (!fireCd.Ready(Clock) || _bullets.Count >= maxBulletCount)
                 return;
             Shoot(_aimDirection);
         }
@@ -86,9 +86,9 @@ namespace PlayerController
 
         private void Shoot(Vector2 direction)
         {
-            fireCd.Consume(_clock);
+            fireCd.Consume(Clock);
             
-            var bulletGo = GameServices.Spawner.Spawn("bullet", transform.position);
+            var bulletGo = GameServices.Spawner.Spawn("Objects/bullet", transform.position);
             if (!bulletGo.TryGetComponent(out IBullet bullet)) 
                 return;
             
