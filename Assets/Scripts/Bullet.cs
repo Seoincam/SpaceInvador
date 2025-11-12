@@ -1,5 +1,6 @@
 using PlayerController;
 using Services;
+using Services.Time;
 using UnityEngine;
 
 namespace DefaultNamespace
@@ -13,7 +14,7 @@ namespace DefaultNamespace
     }
     
     [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
-    public class Bullet : MonoBehaviour, IBullet
+    public class Bullet : MonoBehaviour, IBullet, IClockAware
     {
         [SerializeField] private float speed;
         [SerializeField] private LayerMask targetLayer;
@@ -27,6 +28,7 @@ namespace DefaultNamespace
         private Vector2 _direction;
         private Transform _safeArea;
 
+        public IClock Clock { get; set; }
         public bool CanRetrieve { get; private set; }
         public GameObject GameObject => gameObject;
 
@@ -48,6 +50,9 @@ namespace DefaultNamespace
         
         private void FixedUpdate()
         {
+            if (Clock.IsStopped)
+                return;
+            
             Vector2 nextPos = _rb.position + _direction * (speed * Time.fixedDeltaTime);
             nextPos.x = nextPos.x switch
             {

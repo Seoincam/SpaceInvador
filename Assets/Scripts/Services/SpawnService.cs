@@ -1,3 +1,4 @@
+using Services.Time;
 using UnityEngine;
 
 namespace Services
@@ -51,7 +52,8 @@ namespace Services
                     instance.transform.position = worldPos.Value;
                     instance.transform.rotation = rotation;
                 }
-                
+
+                ClockInjector.Inject(instance, TimeService.Instance.GamePlayClock);
                 return instance;
             }
             
@@ -65,6 +67,7 @@ namespace Services
             if (_pool is PoolService pool)
                 pool.RegisterNewInstance(prefab, instance);
 
+            ClockInjector.Inject(instance, TimeService.Instance.GamePlayClock);
             return instance;
         }
     }

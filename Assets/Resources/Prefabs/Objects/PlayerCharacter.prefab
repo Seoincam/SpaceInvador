@@ -206,6 +206,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxBulletCount: 4
   bulletSafeArea: {fileID: 8830227105719726026}
+  fireCdDuration: 0.5
+  fireCd:
+    duration: 0
 --- !u!1 &3029577898791707050
 GameObject:
   m_ObjectHideFlags: 0

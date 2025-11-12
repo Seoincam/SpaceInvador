@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DefaultNamespace;
 using Services;
+using Services.Time;
 using UnityEngine;
 
 namespace PlayerController
@@ -13,21 +14,28 @@ namespace PlayerController
         void Retrieve(IBullet bullet);
     }
     
-    public class PlayerShooter : MonoBehaviour, IPlayerShooter, IDamageable
+    public class PlayerShooter : MonoBehaviour, IPlayerShooter, IDamageable, IClockAware
     {
         [SerializeField] private int maxBulletCount = 4;
         [SerializeField] private Transform bulletSafeArea;
+
+        [Header("Cooldown")] 
+        [SerializeField] private float fireCdDuration;
+        [SerializeField] private Cooldown fireCd;
         
         private Camera _cam;
         
         private Vector2 _aimInput;
         private Vector2 _aimDirection;
         private List<IBullet> _bullets;
+        
+        public IClock Clock { get; set; }
 
         private void Awake()
         {
             _cam = Camera.main;
-            
+
+            fireCd = new Cooldown(fireCdDuration);
             _bullets = new List<IBullet>(maxBulletCount);
         }
 
@@ -45,7 +53,7 @@ namespace PlayerController
 
         public void TryFire()
         {
-            if (_bullets.Count >= maxBulletCount)
+            if (!fireCd.Ready(Clock) || _bullets.Count >= maxBulletCount)
                 return;
             Shoot(_aimDirection);
         }
@@ -73,11 +81,14 @@ namespace PlayerController
         public void TakeDamage()
         {
             Debug.Log($"Player {gameObject.name} damaged!");
+            // TODO: 총알 회수 처리해야함.
         }
 
         private void Shoot(Vector2 direction)
         {
-            var bulletGo = GameServices.Spawner.Spawn("bullet", transform.position);
+            fireCd.Consume(Clock);
+            
+            var bulletGo = GameServices.Spawner.Spawn("Objects/bullet", transform.position);
             if (!bulletGo.TryGetComponent(out IBullet bullet)) 
                 return;
             
