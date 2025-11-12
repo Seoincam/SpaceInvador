@@ -10,22 +10,25 @@ namespace PlayerController
         void SetAimInput(Vector2 aimInput);
         void TryFire();
         void TryRetrieve();
+        void Retrieve(IBullet bullet);
     }
     
-    public class PlayerShooter : MonoBehaviour, IPlayerShooter
+    public class PlayerShooter : MonoBehaviour, IPlayerShooter, IDamageable
     {
         [SerializeField] private int maxBulletCount = 4;
+        [SerializeField] private Transform bulletSafeArea;
         
         private Camera _cam;
         
         private Vector2 _aimInput;
         private Vector2 _aimDirection;
-        private Queue<IBullet> _bullets;
+        private List<IBullet> _bullets;
 
         private void Awake()
         {
             _cam = Camera.main;
-            _bullets = new Queue<IBullet>(maxBulletCount);
+            
+            _bullets = new List<IBullet>(maxBulletCount);
         }
 
         private void Update()
@@ -42,28 +45,44 @@ namespace PlayerController
 
         public void TryFire()
         {
-            if (_bullets.Count < maxBulletCount)
-            {
-                Shoot(_aimDirection);
-            }
+            if (_bullets.Count >= maxBulletCount)
+                return;
+            Shoot(_aimDirection);
         }
 
         public void TryRetrieve()
         {
-            if (_bullets.TryDequeue(out var bullet))
+            if (_bullets.Count <= 0) 
+                return;
+
+            foreach (var bullet in _bullets)
             {
-                GameServices.Spawner.Despawn(bullet.GameObject);
+                if (!bullet.CanRetrieve)
+                {
+                    bullet.SetRetrieve();
+                    break;
+                }
             }
+        }
+
+        public void Retrieve(IBullet bullet)
+        {
+            _bullets.Remove(bullet);
+        }
+        
+        public void TakeDamage()
+        {
+            Debug.Log($"Player {gameObject.name} damaged!");
         }
 
         private void Shoot(Vector2 direction)
         {
             var bulletGo = GameServices.Spawner.Spawn("bullet", transform.position);
-            if (bulletGo.TryGetComponent(out IBullet bullet))
-            {
-                _bullets.Enqueue(bullet);
-                bullet.Shoot(direction);
-            }
+            if (!bulletGo.TryGetComponent(out IBullet bullet)) 
+                return;
+            
+            _bullets.Add(bullet);
+            bullet.Shoot(direction, bulletSafeArea);
         }
     }
 }
