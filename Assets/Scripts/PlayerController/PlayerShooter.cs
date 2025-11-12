@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using DefaultNamespace;
 using Services;
+using Services.Time;
 using UnityEngine;
 
 namespace PlayerController
@@ -17,8 +18,13 @@ namespace PlayerController
     {
         [SerializeField] private int maxBulletCount = 4;
         [SerializeField] private Transform bulletSafeArea;
+
+        [Header("Cooldown")] 
+        [SerializeField] private float fireCdDuration;
+        [SerializeField] private Cooldown fireCd;
         
         private Camera _cam;
+        private IClock _clock;
         
         private Vector2 _aimInput;
         private Vector2 _aimDirection;
@@ -27,7 +33,9 @@ namespace PlayerController
         private void Awake()
         {
             _cam = Camera.main;
-            
+            _clock = TimeService.Instance.GamePlayClock;
+
+            fireCd = new Cooldown(fireCdDuration);
             _bullets = new List<IBullet>(maxBulletCount);
         }
 
@@ -45,7 +53,7 @@ namespace PlayerController
 
         public void TryFire()
         {
-            if (_bullets.Count >= maxBulletCount)
+            if (!fireCd.Ready(_clock) || _bullets.Count >= maxBulletCount)
                 return;
             Shoot(_aimDirection);
         }
@@ -73,10 +81,13 @@ namespace PlayerController
         public void TakeDamage()
         {
             Debug.Log($"Player {gameObject.name} damaged!");
+            // TODO: 총알 회수 처리해야함.
         }
 
         private void Shoot(Vector2 direction)
         {
+            fireCd.Consume(_clock);
+            
             var bulletGo = GameServices.Spawner.Spawn("bullet", transform.position);
             if (!bulletGo.TryGetComponent(out IBullet bullet)) 
                 return;
