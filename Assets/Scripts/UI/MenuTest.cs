@@ -1,4 +1,5 @@
 using System;
+using Services;
 using Services.Time;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -41,8 +42,8 @@ namespace UI
         private void OpenMenu()
         {
             Debug.Log("Opening menu");
-            
-            _pauseToken ??= TimeService.Instance.GamePlayClock.PauseScope();
+
+            _pauseToken ??= GameServices.Time.Clocks[ClockType.GamePlay].PauseScope();
 
             _canvasGroup.interactable = true;
             _canvasGroup.blocksRaycasts = true;

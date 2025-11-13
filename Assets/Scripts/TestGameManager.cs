@@ -1,13 +1,63 @@
+using System;
+using DG.Tweening;
 using Services;
+using Services.Time;
 using UnityEngine;
 
 namespace DefaultNamespace
 {
     public class TestGameManager : MonoBehaviour
     {
+        private IDisposable _gamePlayClockPauseToken;
+        private IDisposable _uiClockPauseToken;
+        
         private void Start()
         {
             GameServices.Spawner.Spawn("Objects/PlayerCharacter", Vector3.zero);
+        }
+
+        [ContextMenu("Create TestSquares With Tween")]
+        private void CreateTestSquareWithTween()
+        {
+            var squareA = GameServices.Spawner.Spawn("Objects/TestSquare", new Vector3(10, 0));
+            squareA.transform.DOMoveY(3f, 1f)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetId(ClockType.GamePlay);
+            squareA.name = "GamePlayClock Tween";
+            
+            var squareB = GameServices.Spawner.Spawn("Objects/TestSquare", new Vector3(12, 0));
+            squareB.transform.DOMoveY(3f, 1f)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetId(ClockType.UI);
+            squareB.name = "UIClock Tween";
+        }
+
+        [ContextMenu("Toggle GamePlay Clock Pause")]
+        private void ToggleGamePlayClock()
+        {
+            if (_gamePlayClockPauseToken == null)
+            {
+                _gamePlayClockPauseToken = GameServices.Time.Clocks[ClockType.GamePlay].PauseScope();
+            }
+            else
+            {
+                _gamePlayClockPauseToken.Dispose();
+                _gamePlayClockPauseToken = null;
+            }
+        }
+
+        [ContextMenu("Toggle UI Clock Pause")]
+        private void ToggleUIClockPause()
+        {
+            if (_uiClockPauseToken == null)
+            {
+                _uiClockPauseToken = GameServices.Time.Clocks[ClockType.UI].PauseScope();
+            }
+            else
+            {
+                _uiClockPauseToken.Dispose();
+                _uiClockPauseToken = null;
+            }
         }
     }
 }

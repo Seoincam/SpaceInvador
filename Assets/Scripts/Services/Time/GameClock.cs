@@ -18,6 +18,7 @@ namespace Services.Time
         public bool IsStopped => IsPaused || TimeScale <= 0f;
 
         public float TimeScale { get => timeScale; set => timeScale = value; }
+        public ClockType Type { get; private set; }
         
         public void Tick(float unscaledDeltaTime)
         {
@@ -52,5 +53,7 @@ namespace Services.Time
                 if (!_wasPaused) _clock.Resume();
             }
         }
+
+        public GameClock(ClockType type) {  Type = type; }
     }
 }

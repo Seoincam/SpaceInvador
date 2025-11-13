@@ -13,6 +13,11 @@ namespace Services.Time
         float DeltaTime { get; }
         
         /// <summary>
+        /// 시간의 진행 속도.
+        /// </summary>
+        float TimeScale { get; }
+        
+        /// <summary>
         /// 메뉴 등으로 인해 의도된 정지 여부.
         /// </summary>
         bool IsPaused { get; }
@@ -36,5 +41,7 @@ namespace Services.Time
         /// using 형태로 일시 정지 범위 제어용.
         /// </summary>
         System.IDisposable PauseScope();
+
+        ClockType Type { get; }
     }
 }
