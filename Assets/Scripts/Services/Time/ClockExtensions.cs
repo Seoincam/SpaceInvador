@@ -1,3 +1,6 @@
+using System;
+using System.Threading;
+using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
 
@@ -36,6 +39,31 @@ namespace Services.Time
                 return;
             foreach (var tween in list)
                 tween.timeScale = clock.TimeScale;
+        }
+
+        /// <summary>
+        /// 지정된 <see cref="TimeSpan"/> 동안 <see cref="IClock"/> 기준으로 지연.
+        /// </summary>
+        public static async UniTask Delay(this IClock clock, TimeSpan delayTimeSpan, CancellationToken cancellationToken = default)
+        {
+            var sec = (float)delayTimeSpan.TotalSeconds;
+            await clock.Delay(sec, cancellationToken);
+        }
+        
+        /// <summary>
+        /// 지정된 초 동안 <see cref="IClock"/> 기준으로 지연.
+        /// </summary>
+        public static async UniTask Delay(this IClock clock, float seconds, CancellationToken cancellationToken = default)
+        {
+            if (seconds < 0)
+                throw new ArgumentOutOfRangeException("Delay does not allow minus second. second: " + seconds);
+
+            double end = clock.Time + seconds;
+            while (clock.Time < end)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+            }
         }
     }
 }
