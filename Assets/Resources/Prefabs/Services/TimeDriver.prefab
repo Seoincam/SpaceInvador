@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4055613533868767471}
-  - component: {fileID: 3132701137545275924}
+  - component: {fileID: 9159144895551441370}
   m_Layer: 0
-  m_Name: TimeServiece
+  m_Name: TimeDriver
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,7 +32,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3132701137545275924
+--- !u!114 &9159144895551441370
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -41,16 +41,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 2693669379324656116}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8cb218eb01654c6590c0b3b9daed098f, type: 3}
+  m_Script: {fileID: 11500000, guid: e0d08a55b34546309f0471e51a44e53d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gamePlayClock:
-    time: 0
-    deltaTime: 0
-    isPaused: 0
-    timeScale: 0
-  uiClock:
-    time: 0
-    deltaTime: 0
-    isPaused: 0
-    timeScale: 0

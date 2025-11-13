@@ -1,40 +1,27 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace Services.Time
 {
-    public class TimeService : MonoBehaviour
+    public class TimeService
     {
-        public static TimeService Instance { get; private set; }
-        
-        private readonly Dictionary<ClockType, IClock> _clocks;
+        private readonly Dictionary<ClockType, IClock> _clocks = new();
 
         public IReadOnlyDictionary<ClockType, IClock> Clocks => _clocks;
 
-        private void Awake()
+        public TimeService()
         {
-            if (Instance != null) 
-            {
-                Destroy(gameObject);
-                return;
-            }
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-
             // 모든 타입의 Clock 생성 보장
             foreach (ClockType type in Enum.GetValues(typeof(ClockType)))
                 _clocks[type] = new GameClock(type);
         }
-
-        private void Update()
+        
+        /// <param name="unscaledDeltaTime">TimeScale 등에 영향 받지 않는 Unity의 실제 시간.</param>
+        public void Tick(float unscaledDeltaTime)
         {
-            // TimeScale 등에 영향 받지 않는 Unity의 실제 시간.
-            float udt = UnityEngine.Time.unscaledDeltaTime;
-
             foreach (var clock in _clocks.Values)
             {
-                clock.Tick(udt);
+                clock.Tick(unscaledDeltaTime);
                 clock.SyncTween();
             }
         }

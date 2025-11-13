@@ -53,7 +53,7 @@ namespace Services
                     instance.transform.rotation = rotation;
                 }
 
-                TimeService.Instance.Clocks[ClockType.GamePlay].Inject(instance);
+                GameServices.Time.Clocks[ClockType.GamePlay].Inject(instance);
                 return instance;
             }
             
@@ -67,7 +67,7 @@ namespace Services
             if (_pool is PoolService pool)
                 pool.RegisterNewInstance(prefab, instance);
 
-            TimeService.Instance.Clocks[ClockType.GamePlay].Inject(instance);
+            GameServices.Time.Clocks[ClockType.GamePlay].Inject(instance);
             return instance;
         }
     }
