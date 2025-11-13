@@ -35,6 +35,7 @@ namespace Services.Time
             foreach (var clock in _clocks.Values)
             {
                 clock.Tick(udt);
+                clock.SyncTween();
             }
         }
     }
