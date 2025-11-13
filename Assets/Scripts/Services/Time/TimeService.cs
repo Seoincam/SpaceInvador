@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Services.Time
@@ -5,12 +7,10 @@ namespace Services.Time
     public class TimeService : MonoBehaviour
     {
         public static TimeService Instance { get; private set; }
-
-        [SerializeField] private GameClock gamePlayClock;
-        [SerializeField] private GameClock uiClock;
         
-        public IClock GamePlayClock => gamePlayClock;
-        public IClock UIClock => uiClock;
+        private readonly Dictionary<ClockType, IClock> _clocks;
+
+        public IReadOnlyDictionary<ClockType, IClock> Clocks => _clocks;
 
         private void Awake()
         {
@@ -22,17 +22,20 @@ namespace Services.Time
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            gamePlayClock = new GameClock();
-            uiClock = new GameClock();
+            // 모든 타입의 Clock 생성 보장
+            foreach (ClockType type in Enum.GetValues(typeof(ClockType)))
+                _clocks[type] = new GameClock(type);
         }
 
         private void Update()
         {
             // TimeScale 등에 영향 받지 않는 Unity의 실제 시간.
             float udt = UnityEngine.Time.unscaledDeltaTime;
-            
-            GamePlayClock?.Tick(udt);
-            UIClock?.Tick(udt);
+
+            foreach (var clock in _clocks.Values)
+            {
+                clock.Tick(udt);
+            }
         }
     }
 }

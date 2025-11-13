@@ -41,8 +41,8 @@ namespace UI
         private void OpenMenu()
         {
             Debug.Log("Opening menu");
-            
-            _pauseToken ??= TimeService.Instance.GamePlayClock.PauseScope();
+
+            _pauseToken ??= TimeService.Instance.Clocks[ClockType.GamePlay].PauseScope();
 
             _canvasGroup.interactable = true;
             _canvasGroup.blocksRaycasts = true;
