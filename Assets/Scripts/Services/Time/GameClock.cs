@@ -1,4 +1,5 @@
 using System;
+using Attributes;
 using UnityEngine;
 
 namespace Services.Time
@@ -6,9 +7,9 @@ namespace Services.Time
     [Serializable]
     public sealed class GameClock : IClock
     {
-        [SerializeField] private double time;
-        [SerializeField] private float deltaTime;
-        [SerializeField] private bool isPaused;
+        [SerializeField, VisibleOnly] private double time;
+        [SerializeField, VisibleOnly] private float deltaTime;
+        [SerializeField, VisibleOnly] private bool isPaused;
 
         [Space, SerializeField] private float timeScale = 1f;
 
@@ -17,8 +18,13 @@ namespace Services.Time
         public bool IsPaused => isPaused;
         public bool IsStopped => IsPaused || TimeScale <= 0f;
 
-        public float TimeScale { get => timeScale; set => timeScale = value; }
         public ClockType Type { get; private set; }
+
+        public float TimeScale
+        {
+            get => timeScale;
+            set { timeScale = value; this.SyncTween(); }
+        }
         
         public void Tick(float unscaledDeltaTime)
         {
@@ -32,8 +38,17 @@ namespace Services.Time
             time += DeltaTime;
         }
 
-        public void Pause() => isPaused = true;
-        public void Resume() => isPaused = false;
+        public void Pause()
+        {
+            isPaused = true;
+            this.SyncTween();
+        }
+
+        public void Resume()
+        {
+            isPaused = false;
+            this.SyncTween();
+        }
 
         public IDisposable PauseScope() => new PauseToken(this);
 
@@ -54,6 +69,6 @@ namespace Services.Time
             }
         }
 
-        public GameClock(ClockType type) {  Type = type; }
+        public GameClock(ClockType type) { Type = type; }
     }
 }

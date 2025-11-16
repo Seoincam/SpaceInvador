@@ -37,7 +37,7 @@ namespace DefaultNamespace
         {
             if (_gamePlayClockPauseToken == null)
             {
-                _gamePlayClockPauseToken = GameServices.Time.Clocks[ClockType.GamePlay].PauseScope();
+                _gamePlayClockPauseToken = TimeManager.Clocks[ClockType.GamePlay].PauseScope();
             }
             else
             {
@@ -51,7 +51,7 @@ namespace DefaultNamespace
         {
             if (_uiClockPauseToken == null)
             {
-                _uiClockPauseToken = GameServices.Time.Clocks[ClockType.UI].PauseScope();
+                _uiClockPauseToken = TimeManager.Clocks[ClockType.UI].PauseScope();
             }
             else
             {
