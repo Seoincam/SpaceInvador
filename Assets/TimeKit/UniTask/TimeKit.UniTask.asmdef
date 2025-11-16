@@ -1,0 +1,19 @@
+{
+    "name": "TimeKit.UniTask",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c9d070f55cd36414784fcbaedd74ea62",
+        "GUID:f51ebe6a0ceec4240a699833d6309b23"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "HAS_UNITASK"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

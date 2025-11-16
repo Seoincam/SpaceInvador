@@ -1,6 +1,6 @@
 using PlayerController;
 using Services;
-using Services.Time;
+using TimeKit.Core;
 using UnityEngine;
 
 namespace DefaultNamespace

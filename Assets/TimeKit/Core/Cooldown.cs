@@ -1,8 +1,9 @@
+using System;
 using UnityEngine;
 
-namespace Services.Time
+namespace TimeKit.Core
 {
-    [System.Serializable]
+    [Serializable]
     public struct Cooldown
     {
         [SerializeField] private float duration;
@@ -18,7 +19,7 @@ namespace Services.Time
         
         public bool Ready(IClock clock) => clock.Time >= _readyAt;
         
-        public float Remaining(IClock clock) => Mathf.Max(0f, (float)(_readyAt - clock.Time));
-        public float RemainingRatio(IClock clock) => duration <= 0 ? 0f : Mathf.Clamp01(Remaining(clock) / duration);
+        public float Remaining(IClock clock) => Math.Max(0f, (float)(_readyAt - clock.Time));
+        public float RemainingRatio(IClock clock) => duration <= 0 ? 0f : Math.Clamp(Remaining(clock) / duration, 0f, 1f);
     }
 }

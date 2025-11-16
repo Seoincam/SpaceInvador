@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using DefaultNamespace;
 using Services;
-using Services.Time;
+using TimeKit.Core;
 using UnityEngine;
 
 namespace PlayerController
