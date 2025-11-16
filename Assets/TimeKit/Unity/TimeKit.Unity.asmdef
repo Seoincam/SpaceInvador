@@ -1,3 +1,16 @@
 {
-	"name": "TimeKit.Unity"
+    "name": "TimeKit.Unity",
+    "rootNamespace": "",
+    "references": [
+        "GUID:c9d070f55cd36414784fcbaedd74ea62"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

@@ -1,7 +1,9 @@
 {
     "name": "TimeKit.DOTween",
     "rootNamespace": "",
-    "references": [],
+    "references": [
+        "GUID:c9d070f55cd36414784fcbaedd74ea62"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
