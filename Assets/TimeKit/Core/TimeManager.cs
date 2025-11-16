@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Services.Time
+namespace TimeKit.Core
 {
     public static class TimeManager
     {
@@ -9,21 +9,26 @@ namespace Services.Time
 
         public static IReadOnlyDictionary<ClockType, IClock> Clocks => _clockMap;
 
+        public static bool IsInitialized { get; private set; }
+        public static event Action Initialized;
+
         public static void Initialize()
         {
-            // 모든 타입의 Clock 생성 보장
+            if (IsInitialized) 
+                return;
+            
+            _clockMap.Clear();
             foreach (ClockType type in Enum.GetValues(typeof(ClockType)))
-                _clockMap[type] = new GameClock(type);
+                _clockMap[type] = new Clock(type);
+
+            IsInitialized = true;
+            Initialized?.Invoke();
         }
         
-        public static void Tick()
+        public static void Tick(float unscaledDeltaTime)
         {
-            float unscaledDeltaTime = UnityEngine.Time.unscaledDeltaTime;
             foreach (var clock in _clockMap.Values)
-            {
                 clock.Tick(unscaledDeltaTime);
-                clock.SyncTween();
-            }
         }
     }
 }

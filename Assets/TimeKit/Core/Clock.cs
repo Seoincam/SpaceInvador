@@ -1,0 +1,79 @@
+using System;
+
+namespace TimeKit.Core
+{
+    [Serializable]
+    public sealed class Clock : IClock
+    {
+        private float _timeScale;
+        
+        public double Time { get; private set; }
+
+        public float DeltaTime { get; private set; }
+
+        public bool IsPaused { get; private set; }
+
+        public float TimeScale
+        {
+            get => _timeScale;
+            set
+            {
+                _timeScale = value;
+                TimeScaleChanged?.Invoke();
+            }
+        }
+        
+        public ClockType Type { get; private set; }
+
+        public bool IsStopped => IsPaused || TimeScale <= 0f;
+        
+        public void Tick(float unscaledDeltaTime)
+        {
+            if (IsStopped)
+            {
+                DeltaTime = 0f;
+                return;
+            }
+
+            DeltaTime = unscaledDeltaTime * TimeScale;
+            Time += DeltaTime;
+        }
+
+        public void Pause()
+        {
+            IsPaused = true;
+            Paused?.Invoke();
+        }
+
+        public void Resume()
+        {
+            IsPaused = false;
+            Resumed?.Invoke();
+        }
+
+        public event Action TimeScaleChanged;
+        public event Action Paused;
+        public event Action Resumed;
+
+        public IDisposable PauseScope() => new PauseToken(this);
+
+        private sealed class PauseToken : IDisposable
+        {
+            private readonly Clock _clock;
+            private readonly bool _wasPaused;
+
+            public PauseToken(Clock clock)
+            {
+                _clock = clock;
+                _wasPaused = clock.IsPaused;
+                clock.Pause();
+            }
+            public void Dispose()
+            {
+                if (!_wasPaused) _clock.Resume();
+            }
+        }
+
+        public Clock(ClockType type) { Type = type; }
+    }
+}

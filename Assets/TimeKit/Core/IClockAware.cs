@@ -1,4 +1,4 @@
-namespace Services.Time
+namespace TimeKit.Core
 {
     public interface IClockAware
     {

@@ -1,4 +1,6 @@
-namespace Services.Time
+using System;
+
+namespace TimeKit.Core
 {
     public interface IClock
     {
@@ -36,6 +38,10 @@ namespace Services.Time
 
         void Pause();
         void Resume();
+
+        event Action TimeScaleChanged;
+        event Action Paused;
+        event Action Resumed;
 
         /// <summary>
         /// using 형태로 일시 정지 범위 제어용.

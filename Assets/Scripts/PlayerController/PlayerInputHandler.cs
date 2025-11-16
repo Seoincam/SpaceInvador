@@ -1,18 +1,17 @@
-using Services.Time;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace PlayerController
 {
     [RequireComponent(typeof(IPlayerMover), typeof(IPlayerShooter))]
-    public class PlayerInputHandler : MonoBehaviour, IClockAware
+    public class PlayerInputHandler : MonoBehaviour//, IClockAware
     {
         [SerializeField] private InputActionAsset inputActions;
 
         private IPlayerMover _mover;
         private IPlayerShooter _shooter;
         
-        public IClock Clock { get; set; }
+        // public IClock Clock { get; set; }
         
         private void OnEnable()
         {
@@ -38,8 +37,8 @@ namespace PlayerController
 
         private void OnMove(InputAction.CallbackContext ctx)
         {
-            if (Clock.IsStopped)
-                return;
+            // if (Clock.IsStopped)
+            //     return;
             
             var moveInput = ctx.ReadValue<Vector2>();
             _mover.SetMoveInput(moveInput);
@@ -47,8 +46,8 @@ namespace PlayerController
 
         private void OnLook(InputAction.CallbackContext ctx)
         {
-            if (Clock.IsStopped)
-                return;
+            // if (Clock.IsStopped)
+            //     return;
 
             var aimInput = ctx.ReadValue<Vector2>();
             _shooter.SetAimInput(aimInput);
@@ -56,16 +55,16 @@ namespace PlayerController
 
         private void OnFire(InputAction.CallbackContext ctx)
         {
-            if (Clock.IsStopped)
-                return;
+            // if (Clock.IsStopped)
+            //     return;
 
             _shooter.TryFire();
         }
 
         private void OnRetrieve(InputAction.CallbackContext ctx)
         {
-            if (Clock.IsStopped)
-                return;
+            // if (Clock.IsStopped)
+            //     return;
 
             _shooter.TryRetrieve();
         }

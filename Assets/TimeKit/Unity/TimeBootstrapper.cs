@@ -1,11 +1,12 @@
+using TimeKit.Core;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.LowLevel;
 using UnityEngine.PlayerLoop;
 
-namespace Services.Time
+namespace TimeKit.Unity
 {
-    public static class TimeBootstrapper
+    internal static class TimeBootstrapper
     {
         private static PlayerLoopSystem _system;
         
@@ -44,11 +45,17 @@ namespace Services.Time
             _system = new PlayerLoopSystem()
             {
                 type = typeof(TimeManager),
-                updateDelegate = TimeManager.Tick,
+                updateDelegate = TimeManagerUpdate,
                 subSystemList = null
             };
 
             return PlayerLoopUtils.InsertSystem<T>(ref loopSystem, in _system, index);
+        }
+
+        private static void TimeManagerUpdate()
+        {
+            float udt = Time.unscaledDeltaTime;
+            TimeManager.Tick(udt);
         }
     }
 }

@@ -1,4 +1,3 @@
-using Services.Time;
 using UnityEngine;
 
 namespace Services
@@ -7,13 +6,13 @@ namespace Services
     {
         private readonly IAssetProvider _assets;
         private readonly IPoolService _pool;
-        private readonly IClock _clock;
+        // private readonly IClock _clock;
 
         public SpawnService(IAssetProvider assets, IPoolService pool)
         {
             _assets = assets;
             _pool = pool;
-            _clock = TimeManager.Clocks[ClockType.GamePlay];
+            // _clock = TimeManager.Clocks[ClockType.GamePlay];
         }
 
         public GameObject Spawn(string key, Transform parent = null)
@@ -55,7 +54,7 @@ namespace Services
                     instance.transform.rotation = rotation;
                 }
 
-                _clock.Inject(instance);
+                // _clock.Inject(instance);
                 return instance;
             }
             
@@ -69,7 +68,7 @@ namespace Services
             if (_pool is PoolService pool)
                 pool.RegisterNewInstance(prefab, instance);
 
-            _clock.Inject(instance);
+            // _clock.Inject(instance);
             return instance;
         }
     }

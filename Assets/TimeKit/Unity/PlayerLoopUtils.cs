@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.LowLevel;
 
-namespace Services.Time
+namespace TimeKit.Unity
 {
     public static class PlayerLoopUtils
     {
