@@ -6,5 +6,10 @@ namespace TimeKit.Core
         {
             return new Cooldown(clock, duration);
         }
+
+        public static CooldownObserver Observer(this IReadOnlyCooldown cooldown)
+        {
+            return new CooldownObserver(cooldown);
+        }
     }
 }
