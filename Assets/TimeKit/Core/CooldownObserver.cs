@@ -10,7 +10,7 @@ namespace TimeKit.Core
         public event Action<float> RemainingChanged;
         public event Action<float> RatioChanged;
         
-        public CooldownObserver(IReadOnlyCooldown cooldown)
+        internal CooldownObserver(IReadOnlyCooldown cooldown)
         {
             _cooldown = cooldown ?? throw new ArgumentNullException(nameof(cooldown));
             TimeManager.Ticked += OnTick;
