@@ -5,17 +5,20 @@ using UnityEngine.InputSystem;
 namespace PlayerController
 {
     [RequireComponent(typeof(IPlayerMover), typeof(IPlayerShooter))]
-    public class PlayerInputHandler : MonoBehaviour, IClockAware
+    public class PlayerInputHandler : MonoBehaviour
     {
         [SerializeField] private InputActionAsset inputActions;
 
+        private IClock _clock;
+        
         private IPlayerMover _mover;
         private IPlayerShooter _shooter;
         
-        public IClock Clock { get; set; }
-        
-        private void OnEnable()
+        private void Awake()
         {
+            _clock = TimeManager.Clocks[ClockType.GamePlay];
+            
+            // Controller
             _mover = GetComponent<IPlayerMover>();
             _shooter = GetComponent<IPlayerShooter>();
             
@@ -38,7 +41,7 @@ namespace PlayerController
 
         private void OnMove(InputAction.CallbackContext ctx)
         {
-            if (Clock.IsStopped)
+            if (_clock.IsStopped)
                 return;
             
             var moveInput = ctx.ReadValue<Vector2>();
@@ -47,7 +50,7 @@ namespace PlayerController
 
         private void OnLook(InputAction.CallbackContext ctx)
         {
-            if (Clock.IsStopped)
+            if (_clock.IsStopped)
                 return;
 
             var aimInput = ctx.ReadValue<Vector2>();
@@ -56,7 +59,7 @@ namespace PlayerController
 
         private void OnFire(InputAction.CallbackContext ctx)
         {
-            if (Clock.IsStopped)
+            if (_clock.IsStopped)
                 return;
 
             _shooter.TryFire();
@@ -64,7 +67,7 @@ namespace PlayerController
 
         private void OnRetrieve(InputAction.CallbackContext ctx)
         {
-            if (Clock.IsStopped)
+            if (_clock.IsStopped)
                 return;
 
             _shooter.TryRetrieve();

@@ -12,30 +12,39 @@ namespace PlayerController
         void TryFire();
         void TryRetrieve();
         void Retrieve(IBullet bullet);
+        
+        IReadOnlyCooldown FireCooldown { get; }
+        IReadOnlyCooldown RetrieveCooldown { get; }
     }
     
-    public class PlayerShooter : MonoBehaviour, IPlayerShooter, IDamageable, IClockAware
+    public class PlayerShooter : MonoBehaviour, IPlayerShooter, IDamageable
     {
-        [SerializeField] private int maxBulletCount = 4;
         [SerializeField] private Transform bulletSafeArea;
-
-        [Header("Cooldown")] 
-        [SerializeField] private float fireCdDuration;
-        [SerializeField] private Cooldown fireCd;
         
+        [SerializeField] private int maxBulletCount = 4;
+        [SerializeField] private float cooldownDuration = .5f;
+
+        private IClock _clock;
         private Camera _cam;
         
         private Vector2 _aimInput;
         private Vector2 _aimDirection;
         private List<IBullet> _bullets;
         
-        public IClock Clock { get; set; }
+        private Cooldown _fireCooldown;
+        private Cooldown _retrieveCooldown;
+        
+        public IReadOnlyCooldown FireCooldown => _fireCooldown;
+        public IReadOnlyCooldown RetrieveCooldown => _retrieveCooldown;
 
         private void Awake()
         {
             _cam = Camera.main;
 
-            fireCd = new Cooldown(fireCdDuration);
+            _clock = TimeManager.Clocks[ClockType.GamePlay];
+            _fireCooldown = _clock.Cooldown(cooldownDuration);
+            _retrieveCooldown = _clock.Cooldown(cooldownDuration);
+            
             _bullets = new List<IBullet>(maxBulletCount);
         }
 
@@ -53,14 +62,14 @@ namespace PlayerController
 
         public void TryFire()
         {
-            if (!fireCd.Ready(Clock) || _bullets.Count >= maxBulletCount)
+            if (!_fireCooldown.IsReady || _bullets.Count >= maxBulletCount)
                 return;
             Shoot(_aimDirection);
         }
 
         public void TryRetrieve()
         {
-            if (_bullets.Count <= 0) 
+            if (!_retrieveCooldown.IsReady || _bullets.Count <= 0) 
                 return;
 
             foreach (var bullet in _bullets)
@@ -71,11 +80,7 @@ namespace PlayerController
                     break;
                 }
             }
-        }
-
-        public void Retrieve(IBullet bullet)
-        {
-            _bullets.Remove(bullet);
+            _retrieveCooldown.Consume();
         }
         
         public void TakeDamage()
@@ -83,10 +88,15 @@ namespace PlayerController
             Debug.Log($"Player {gameObject.name} damaged!");
             // TODO: 총알 회수 처리해야함.
         }
+        
+        public void Retrieve(IBullet bullet)
+        {
+            _bullets.Remove(bullet);
+        }
 
         private void Shoot(Vector2 direction)
         {
-            fireCd.Consume(Clock);
+            _fireCooldown.Consume();
             
             var bulletGo = GameServices.Spawner.Spawn("Objects/bullet", transform.position);
             if (!bulletGo.TryGetComponent(out IBullet bullet)) 
