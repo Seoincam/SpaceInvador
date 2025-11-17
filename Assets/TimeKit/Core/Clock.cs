@@ -3,7 +3,7 @@ using System;
 namespace TimeKit.Core
 {
     [Serializable]
-    public sealed class Clock : IClock
+    internal sealed class Clock : IClock
     {
         private float _timeScale;
         
@@ -74,6 +74,10 @@ namespace TimeKit.Core
             }
         }
 
-        public Clock(ClockType type) { Type = type; }
+        public Clock(ClockType type)
+        {
+            Type = type;
+            TimeScale = 1f;
+        }
     }
 }

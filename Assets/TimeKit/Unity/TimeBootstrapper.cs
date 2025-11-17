@@ -11,7 +11,7 @@ namespace TimeKit.Unity
         private static PlayerLoopSystem _system;
         
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
-        private static void Initialize()
+        internal static void Initialize()
         {
             TimeManager.Initialize();
             

@@ -10,11 +10,6 @@ namespace DefaultNamespace
     {
         private IDisposable _gamePlayClockPauseToken;
         private IDisposable _uiClockPauseToken;
-        
-        private void Start()
-        {
-            GameServices.Spawner.Spawn("Objects/PlayerCharacter", Vector3.zero);
-        }
 
         [ContextMenu("Create TestSquares With Tween")]
         private void CreateTestSquareWithTween()

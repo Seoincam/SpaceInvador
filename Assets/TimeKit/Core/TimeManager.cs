@@ -12,6 +12,8 @@ namespace TimeKit.Core
         public static bool IsInitialized { get; private set; }
         public static event Action Initialized;
 
+        internal static event Action Ticked;
+
         public static void Initialize()
         {
             if (IsInitialized) 
@@ -29,6 +31,7 @@ namespace TimeKit.Core
         {
             foreach (var clock in _clockMap.Values)
                 clock.Tick(unscaledDeltaTime);
+            Ticked?.Invoke();
         }
     }
 }
