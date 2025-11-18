@@ -19,13 +19,17 @@ namespace TimeKit.Core
             set
             {
                 _timeScale = value;
-                TimeScaleChanged?.Invoke();
+                TimeScaleChanged?.Invoke(this);
             }
         }
         
         public ClockType Type { get; private set; }
 
         public bool IsStopped => IsPaused || TimeScale <= 0f;
+        
+        public event Action<IReadOnlyClock> TimeScaleChanged;
+        public event Action<IReadOnlyClock> Paused;
+        public event Action<IReadOnlyClock> Resumed;
         
         public void Tick(float unscaledDeltaTime)
         {
@@ -42,18 +46,14 @@ namespace TimeKit.Core
         public void Pause()
         {
             IsPaused = true;
-            Paused?.Invoke();
+            Paused?.Invoke(this);
         }
 
         public void Resume()
         {
             IsPaused = false;
-            Resumed?.Invoke();
+            Resumed?.Invoke(this);
         }
-
-        public event Action TimeScaleChanged;
-        public event Action Paused;
-        public event Action Resumed;
 
         public IDisposable PauseScope() => new PauseToken(this);
 
