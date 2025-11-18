@@ -23,6 +23,7 @@ namespace TimeKit.DOTween
 
         private static void Register()
         {
+            /*
             foreach (ClockType type in Enum.GetValues(typeof(ClockType)))
             {
                 var clock = TimeManager.Clocks[type];
@@ -35,6 +36,7 @@ namespace TimeKit.DOTween
                 clock.Paused += clock.SyncTween;
                 clock.Resumed += clock.SyncTween;
             }
+            */
         }
     }
 }

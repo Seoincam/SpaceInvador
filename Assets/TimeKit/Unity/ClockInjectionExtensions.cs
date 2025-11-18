@@ -5,7 +5,7 @@ namespace TimeKit.Unity
 {
     public static class ClockInjectionExtensions
     {
-        public static void Inject(this IClock clock, Component root)
+        public static void Inject(this IClock clock, UnityEngine.Component root)
             => clock.Inject(root.gameObject);
         
         /// <summary>
