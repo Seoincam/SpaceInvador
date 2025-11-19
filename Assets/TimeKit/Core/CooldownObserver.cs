@@ -4,7 +4,7 @@ namespace TimeKit
 {
     public sealed class CooldownObserver : IDisposable
     {
-        private readonly IReadOnlyCooldown _cooldown;
+        public readonly IReadOnlyCooldown Cooldown;
         private float _lastNotified;
 
         public event Action<float> RemainingChanged;
@@ -12,14 +12,14 @@ namespace TimeKit
         
         internal CooldownObserver(IReadOnlyCooldown cooldown)
         {
-            _cooldown = cooldown ?? throw new ArgumentNullException(nameof(cooldown));
+            this.Cooldown = cooldown ?? throw new ArgumentNullException(nameof(cooldown));
             TimeManager.Ticked += OnTick;
         }
 
         private void OnTick()
         {
-            float curRemaining = _cooldown.Remaining;
-            float ratio = _cooldown.RemainingRatio;
+            float curRemaining = Cooldown.Remaining;
+            float ratio = Cooldown.RemainingRatio;
 
             if (_lastNotified - curRemaining > float.Epsilon)
             {

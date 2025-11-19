@@ -37,10 +37,15 @@ namespace TimeKit
                 yield return null;
         }
 
-        public static IEnumerator WaitUntilReady(this Cooldown cooldown)
+        public static IEnumerator WaitUntilReady(this IReadOnlyCooldown cooldown)
         {
             while (!cooldown.IsReady)
                 yield return null;
+        }
+
+        public static IEnumerator WaitUntilReady(this CooldownObserver cooldownObserver)
+        {
+            yield return cooldownObserver.Cooldown.WaitUntilReady();
         }
     }
 }
