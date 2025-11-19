@@ -1,6 +1,6 @@
 using System;
 
-namespace TimeKit.Core
+namespace TimeKit
 {
     [Serializable]
     internal sealed class Clock : IClock

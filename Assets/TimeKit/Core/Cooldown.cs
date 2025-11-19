@@ -1,7 +1,7 @@
 using System;
 using System.Diagnostics;
 
-namespace TimeKit.Core
+namespace TimeKit
 {
     [Serializable]
     public sealed class Cooldown : IReadOnlyCooldown

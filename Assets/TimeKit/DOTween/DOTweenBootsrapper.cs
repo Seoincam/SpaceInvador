@@ -1,5 +1,5 @@
 using System;
-using TimeKit.Core;
+using TimeKit;
 using UnityEngine;
 
 #if DOTWEEN

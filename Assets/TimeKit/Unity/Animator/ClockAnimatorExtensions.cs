@@ -1,30 +1,31 @@
-using TimeKit.Core;
+using TimeKit.Unity.Animator;
 using TimeKit.Unity.Component;
+using UnityEngine;
 
-namespace TimeKit.Unity.Animator
+namespace TimeKit
 {
     public static class ClockAnimatorExtensions
     {
-        public static IReadOnlyClock SetLink(this IReadOnlyClock clock, UnityEngine.Animator animator)
+        public static IClock SetLink(this IClock clock, Animator animator)
         {
-            AnimatorClockLinkGroup.Register(clock.Type, animator);
-            SetComponent(clock, animator);
+            Register(clock, animator);
             return clock;
         }
 
-        public static UnityEngine.Animator WithClock(this UnityEngine.Animator animator, IReadOnlyClock clock)
+        public static Animator WithClock(this Animator animator, IClock clock)
         {
-            AnimatorClockLinkGroup.Register(clock.Type, animator);
-            SetComponent(clock, animator);
+            Register(clock, animator);
             return animator;
         }
 
-        private static void SetComponent(IReadOnlyClock clock, UnityEngine.Animator animator)
+        private static void Register(IReadOnlyClock clock, Animator animator)
         {
-            var linkComponent = animator.GetComponent<ClockLinkComponent>();
-            if (!linkComponent)
-                linkComponent = animator.gameObject.AddComponent<ClockLinkComponent>();
-            linkComponent.LinkAnimator(clock.Type, animator);
+            AnimatorClockLinkGroup.Register(clock.Type, animator);
+            
+            var component = animator.GetComponent<ClockLinkComponent>();
+            if (!component)
+                component = animator.gameObject.AddComponent<ClockLinkComponent>();
+            component.LinkAnimator(clock.Type, animator);
         }
     }
 }

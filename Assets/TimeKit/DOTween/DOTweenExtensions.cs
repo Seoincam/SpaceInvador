@@ -1,7 +1,5 @@
 #if DOTWEEN
-using TimeKit.Core;
-
-namespace TimeKit.DOTween
+namespace TimeKit
 {
     public static class DOTweenExtensions
     {

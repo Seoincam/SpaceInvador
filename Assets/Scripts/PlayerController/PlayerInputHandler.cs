@@ -1,4 +1,4 @@
-using TimeKit.Core;
+using TimeKit;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
