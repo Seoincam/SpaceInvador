@@ -1,7 +1,7 @@
 using System;
 using DG.Tweening;
 using Services;
-using TimeKit.Core;
+using TimeKit;
 using UnityEngine;
 
 namespace DefaultNamespace

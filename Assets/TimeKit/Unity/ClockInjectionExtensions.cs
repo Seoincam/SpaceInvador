@@ -1,7 +1,6 @@
-using TimeKit.Core;
 using UnityEngine;
 
-namespace TimeKit.Unity
+namespace TimeKit
 {
     public static class ClockInjectionExtensions
     {

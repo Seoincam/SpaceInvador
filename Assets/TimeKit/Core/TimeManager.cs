@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace TimeKit.Core
+namespace TimeKit
 {
     public static class TimeManager
     {

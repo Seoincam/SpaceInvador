@@ -1,7 +1,7 @@
-using TimeKit.Core;
+using TimeKit.Unity.Animator;
 using TimeKit.Unity.Component;
 
-namespace TimeKit.Unity.Animator
+namespace TimeKit
 {
     public static class ClockAnimatorExtensions
     {

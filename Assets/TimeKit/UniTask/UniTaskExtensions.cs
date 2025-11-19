@@ -2,9 +2,8 @@
 using System;
 using System.Threading;
 using Cysharp.Threading.Tasks;
-using TimeKit.Core;
 
-namespace TimeKit.UniTask
+namespace TimeKit
 {
     public static class UniTaskExtensions
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace TimeKit.Core
+namespace TimeKit
 {
     public sealed class CooldownObserver : IDisposable
     {

@@ -1,4 +1,4 @@
-namespace TimeKit.Core
+namespace TimeKit
 {
     public interface IReadOnlyCooldown
     {

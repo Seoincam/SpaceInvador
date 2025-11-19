@@ -1,5 +1,4 @@
-using TimeKit.Core;
-using TimeKit.Unity;
+using TimeKit;
 using UnityEngine;
 
 namespace Services

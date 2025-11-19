@@ -1,6 +1,4 @@
-using System;
-
-namespace TimeKit.Core
+namespace TimeKit
 {
     public interface IClock : IReadOnlyClock
     {
