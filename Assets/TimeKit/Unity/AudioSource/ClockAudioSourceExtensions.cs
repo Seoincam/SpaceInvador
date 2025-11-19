@@ -1,5 +1,4 @@
 using TimeKit.Unity.AudioSource;
-using TimeKit.Unity.Component;
 using UnityEngine;
 
 namespace TimeKit
@@ -8,24 +7,23 @@ namespace TimeKit
     {
         public static IClock SetLink(this IClock clock, AudioSource audioSource)
         {
-            Register(clock, audioSource);
+            Register(clock.Type, audioSource);
             return clock;
         }
 
         public static AudioSource WithClock(this AudioSource audioSource, IClock clock)
         {
-            Register(clock, audioSource);
+            Register(clock.Type, audioSource);
             return audioSource;
         }
 
-        private static void Register(IReadOnlyClock clock, AudioSource audioSource)
+        private static void Register(ClockType clockType, AudioSource audioSource)
         {
-            AudioSourceClockLinkGroup.Register(clock.Type, audioSource);
+            var link = audioSource.GetComponent<AudioSourceClockLink>();
+            if (!link)
+                link = audioSource.gameObject.AddComponent<AudioSourceClockLink>();
             
-            var component = audioSource.GetComponent<ClockLinkComponent>();
-            if (!component)
-                component = audioSource.gameObject.AddComponent<ClockLinkComponent>();
-            component.LinkAudioSource(clock.Type, audioSource);
+            link.Register(clockType, audioSource);
         }
     }
 }

@@ -9,6 +9,8 @@ namespace DefaultNamespace
 {
     public class TestGameManager : MonoBehaviour
     {
+        [SerializeField] private ParticleSystem particle;
+        
         private IDisposable _gamePlayClockPauseToken;
         private IDisposable _uiClockPauseToken;
 
@@ -18,7 +20,26 @@ namespace DefaultNamespace
         {
             _clock = TimeManager.Clocks[ClockType.GamePlay];
         }
-
+        
+        [ContextMenu("ParticleSystem/set speed 1f")]
+        private void SetParticleSystemSimulationSpeed()
+        {
+            var module = particle.main;
+            module.simulationSpeed = 1f;
+        }
+        [ContextMenu("ParticleSystem/set speed 0.5f")]
+        private void SetParticleSpeedHalf()
+        {
+            var module = particle.main;
+            module.simulationSpeed = .5f;
+        }
+        [ContextMenu("ParticleSystem/set speed 0f")]
+        private void SetParticleSystemSimulationSpeedZero()
+        {
+            var module = particle.main;
+            module.simulationSpeed = 0f;
+        }
+        
         [ContextMenu("Start Coroutine With Clock")]
         private void StartCoroutineWithClock()
         {
