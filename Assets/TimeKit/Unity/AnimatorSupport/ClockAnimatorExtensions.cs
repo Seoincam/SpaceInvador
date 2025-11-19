@@ -1,3 +1,4 @@
+using System.Linq;
 using TimeKit.Unity.AnimatorSupport;
 using UnityEngine;
 
@@ -19,11 +20,26 @@ namespace TimeKit
 
         private static void Register(ClockType clockType, Animator animator)
         {
-            var link = animator.GetComponent<AnimatorClockLink>();
+            if (!animator)
+                return;
+
+            AnimatorClockLink link = null;
+            
+            var links = animator.GetComponents<AnimatorClockLink>();
+            if (links != null)
+            {
+                foreach (var l in links)
+                {
+                    if (!l || l.Target != animator) continue;
+                    link = l;
+                    break;
+                }
+            }
+
             if (!link)
                 link = animator.gameObject.AddComponent<AnimatorClockLink>();
             
-            link.Register(clockType, animator);
+            link.Bind(clockType, animator);
         }
     }
 }

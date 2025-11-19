@@ -1,4 +1,4 @@
-namespace TimeKit.Unity
+namespace TimeKit.Unity.Base
 {
     internal interface IClockLinked
     {

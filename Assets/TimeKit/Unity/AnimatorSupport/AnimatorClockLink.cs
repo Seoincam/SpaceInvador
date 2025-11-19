@@ -1,32 +1,31 @@
-using System.Collections.Generic;
+using TimeKit.Unity.Base;
 using UnityEngine;
 
 namespace TimeKit.Unity.AnimatorSupport
 {
     [AddComponentMenu("")]
-    public class AnimatorClockLink : ClockLinkComponent<Animator>
+    public class AnimatorClockLink : ClockLinkComponent
     {
-        private readonly Dictionary<Animator, float> _baseSpeed = new();
-        
+        internal Animator Target { get; private set; }
+        private float _baseSpeed;
+        private ClockType _clockType;
+
         public override void SyncWithClock(IReadOnlyClock clock)
         {
-            var listByType = _linked[clock.Type];
-            if (listByType == null)
+            if (clock.Type != _clockType || !Target)
                 return;
             
-            foreach (var animator in listByType)
-            {
-                if (clock.IsStopped)
-                    animator.speed = 0f;
-                else
-                    animator.speed = _baseSpeed[animator] * clock.TimeScale;
-            }
+            if (clock.IsStopped)
+                Target.speed = 0f;
+            else
+                Target.speed = _baseSpeed * clock.TimeScale;
         }
 
-        internal override void Register(ClockType type, Animator animator)
+        internal void Bind(ClockType clockType, Animator animator)
         {
-            base.Register(type, animator);
-            _baseSpeed[animator] = animator.speed;
+            _clockType = clockType;
+            Target = animator;
+            _baseSpeed = Target.speed;
         }
     }
 }
