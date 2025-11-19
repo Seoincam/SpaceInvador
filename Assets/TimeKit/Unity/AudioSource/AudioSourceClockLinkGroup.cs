@@ -49,7 +49,11 @@ namespace TimeKit.Unity.AudioSource
                 if (clock.IsStopped)
                     audioSource.Pause();
                 else
+                {
+                    audioSource.UnPause();
                     audioSource.pitch = clock.TimeScale;
+                }
+                    
             }
         }
 
