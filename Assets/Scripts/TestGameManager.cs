@@ -9,6 +9,8 @@ namespace DefaultNamespace
 {
     public class TestGameManager : MonoBehaviour
     {
+        [SerializeField] private ParticleSystem particle;
+        
         private IDisposable _gamePlayClockPauseToken;
         private IDisposable _uiClockPauseToken;
 
@@ -16,9 +18,26 @@ namespace DefaultNamespace
 
         private void Awake()
         {
-            _clock = TimeManager.Clocks[ClockType.GamePlay];
+            _clock = TimeManager.Clocks[ClockType.GamePlay]
+                .SetLink(particle);
         }
-
+        
+        [ContextMenu("Clock/set time scale 1f")]
+        private void SetClockTimeScaleOne()
+        {
+            _clock.TimeScale = 1f;
+        }
+        [ContextMenu("Clock/set time scale 0.5f")]
+        private void SetClockTimeScaleHalf()
+        {
+            _clock.TimeScale = .5f;
+        }
+        [ContextMenu("Clock/set time scale 0f")]
+        private void SetClockTimeScaleZero()
+        {
+            _clock.TimeScale = 0f;
+        }
+        
         [ContextMenu("Start Coroutine With Clock")]
         private void StartCoroutineWithClock()
         {

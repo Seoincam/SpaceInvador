@@ -2,6 +2,7 @@ namespace TimeKit
 {
     public interface IClock : IReadOnlyClock
     {
+        float TimeScale { set; }
         /// <summary>
         /// 매 프레임 호출 (<c>Update()</c> 등에서).
         /// </summary>
@@ -9,7 +10,7 @@ namespace TimeKit
 
         void Pause();
         void Resume();
-
+        
         /// <summary>
         /// using 형태로 일시 정지 범위 제어용.
         /// </summary>
