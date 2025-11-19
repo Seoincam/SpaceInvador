@@ -2,8 +2,10 @@ using UnityEngine;
 
 namespace TimeKit.Unity.Base
 {
-    public abstract class ClockLinkComponent: MonoBehaviour, IClockLinked
+    public abstract class ClockLinkComponent<T>: MonoBehaviour, IClockLinked where T : Component
     {
+        internal abstract T Target { get; }
+        
         private void Awake()
         {
             hideFlags = HideFlags.HideInInspector;

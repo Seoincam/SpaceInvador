@@ -4,11 +4,13 @@ using UnityEngine;
 namespace TimeKit.Unity.ParticleSystemSupport
 {
     [AddComponentMenu("")]
-    public class ParticleSystemClockLink : ClockLinkComponent
+    public class ParticleSystemClockLink : ClockLinkComponent<ParticleSystem>
     {
-        internal ParticleSystem Target { get; private set; }
+        private ParticleSystem _target;
         private float _baseSimulationSpeed;
         private ClockType _clockType;
+
+        internal override ParticleSystem Target => _target;
 
         public override void SyncWithClock(IReadOnlyClock clock)
         {
@@ -25,7 +27,7 @@ namespace TimeKit.Unity.ParticleSystemSupport
         internal void Bind(ClockType clockType, ParticleSystem system)
         {
             _clockType = clockType;
-            Target = system;
+            _target = system;
             _baseSimulationSpeed = system.main.simulationSpeed;
         }
     }

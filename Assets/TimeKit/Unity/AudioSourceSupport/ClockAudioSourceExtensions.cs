@@ -1,3 +1,4 @@
+using TimeKit.Unity;
 using TimeKit.Unity.AudioSourceSupport;
 using UnityEngine;
 
@@ -22,22 +23,7 @@ namespace TimeKit
             if (!audioSource)
                 return;
 
-            AudioSourceClockLink link = null;
-
-            var links = audioSource.GetComponents<AudioSourceClockLink>();
-            if (links != null)
-            {
-                foreach (var l in links)
-                {
-                    if (!l || l.Target != audioSource) continue;
-                    link = l;
-                    break;
-                }
-            }
-            
-            if (!link)
-                link = audioSource.gameObject.AddComponent<AudioSourceClockLink>();
-            
+            var link = ClockLinkComponentUtils.GetOrAddLinkComponent<AudioSourceClockLink, AudioSource>(audioSource);
             link.Bind(clockType, audioSource);
         }
     }

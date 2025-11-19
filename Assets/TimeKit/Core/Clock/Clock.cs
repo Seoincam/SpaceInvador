@@ -5,24 +5,14 @@ namespace TimeKit
     [Serializable]
     internal sealed class Clock : IClock
     {
-        private float _timeScale;
-        
         public double Time { get; private set; }
 
         public float DeltaTime { get; private set; }
 
         public bool IsPaused { get; private set; }
 
-        public float TimeScale
-        {
-            get => _timeScale;
-            set
-            {
-                _timeScale = value;
-                TimeScaleChanged?.Invoke(this);
-            }
-        }
-        
+        public float TimeScale { get; private set; }
+
         public ClockType Type { get; private set; }
 
         public bool IsStopped => IsPaused || TimeScale <= 0f;
@@ -53,6 +43,13 @@ namespace TimeKit
         {
             IsPaused = false;
             Resumed?.Invoke(this);
+        }
+
+        public void SetTimeScale(float timeScale)
+        {
+            timeScale = Math.Max(0f, timeScale);
+            TimeScale = timeScale;
+            TimeScaleChanged?.Invoke(this);
         }
 
         public IDisposable PauseScope() => new PauseToken(this);
