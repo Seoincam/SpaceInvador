@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace TimeKit
 {
-    public static class ClockCoroutineExtensions
+    public static class ClockYieldInstructionExtensions
     {
         public static IEnumerator WaitForSeconds(this IReadOnlyClock clock, float seconds)
         {
