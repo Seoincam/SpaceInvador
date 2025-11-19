@@ -28,14 +28,20 @@ namespace TimeKit
              while (clock.Time < end)
              {
                  cancellationToken.ThrowIfCancellationRequested();
-                 await Cysharp.Threading.Tasks.UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+                 await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
              }
          }
 
-         public static async UniTask WaitUntilReady(this Cooldown cooldown, CancellationToken cancellationToken = default)
+         public static async UniTask WaitUntilReady(this IReadOnlyCooldown cooldown, CancellationToken cancellationToken = default)
          {
              while (!cooldown.IsReady)
                  await UniTask.Yield(PlayerLoopTiming.Update, cancellationToken);
+         }
+
+         public static async UniTask WaitUntilReady(this CooldownObserver cooldownObserver,
+             CancellationToken cancellationToken = default)
+         {
+             await cooldownObserver.Cooldown.WaitUntilReady(cancellationToken);
          }
     }
 }
