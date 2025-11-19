@@ -18,26 +18,24 @@ namespace DefaultNamespace
 
         private void Awake()
         {
-            _clock = TimeManager.Clocks[ClockType.GamePlay];
+            _clock = TimeManager.Clocks[ClockType.GamePlay]
+                .SetLink(particle);
         }
         
-        [ContextMenu("ParticleSystem/set speed 1f")]
-        private void SetParticleSystemSimulationSpeed()
+        [ContextMenu("Clock/set time scale 1f")]
+        private void SetClockTimeScaleOne()
         {
-            var module = particle.main;
-            module.simulationSpeed = 1f;
+            _clock.TimeScale = 1f;
         }
-        [ContextMenu("ParticleSystem/set speed 0.5f")]
-        private void SetParticleSpeedHalf()
+        [ContextMenu("Clock/set time scale 0.5f")]
+        private void SetClockTimeScaleHalf()
         {
-            var module = particle.main;
-            module.simulationSpeed = .5f;
+            _clock.TimeScale = .5f;
         }
-        [ContextMenu("ParticleSystem/set speed 0f")]
-        private void SetParticleSystemSimulationSpeedZero()
+        [ContextMenu("Clock/set time scale 0f")]
+        private void SetClockTimeScaleZero()
         {
-            var module = particle.main;
-            module.simulationSpeed = 0f;
+            _clock.TimeScale = 0f;
         }
         
         [ContextMenu("Start Coroutine With Clock")]
