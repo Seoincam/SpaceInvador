@@ -40,8 +40,6 @@ namespace UI
 
         private void OpenMenu()
         {
-            Debug.Log("Opening menu");
-
             _pauseToken ??= TimeManager.Clocks[ClockType.GamePlay].PauseScope();
 
             _canvasGroup.interactable = true;

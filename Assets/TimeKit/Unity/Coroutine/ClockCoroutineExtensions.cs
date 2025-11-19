@@ -1,11 +1,11 @@
 using System;
 using System.Collections;
 
-namespace TimeKit.Unity.Coroutine
+namespace TimeKit
 {
     public static class ClockCoroutineExtensions
     {
-        public static IEnumerator Wait(this IReadOnlyClock clock, float seconds)
+        public static IEnumerator WaitForSeconds(this IReadOnlyClock clock, float seconds)
         {
             if (seconds < 0f)
                 throw new ArgumentOutOfRangeException(nameof(seconds));
@@ -15,10 +15,10 @@ namespace TimeKit.Unity.Coroutine
                 yield return null;
         }
 
-        public static IEnumerator Wait(this IReadOnlyClock clock, TimeSpan timeSpan)
+        public static IEnumerator WaitForTimeSpan(this IReadOnlyClock clock, TimeSpan timeSpan)
         {
             var seconds = (float)timeSpan.TotalSeconds;
-            return clock.Wait(seconds);
+            return clock.WaitForSeconds(seconds);
         }
 
         public static IEnumerator WaitUntil(this IReadOnlyClock clock, Func<bool> predicate)

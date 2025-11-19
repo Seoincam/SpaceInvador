@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using DG.Tweening;
 using Services;
 using TimeKit;
@@ -10,6 +11,33 @@ namespace DefaultNamespace
     {
         private IDisposable _gamePlayClockPauseToken;
         private IDisposable _uiClockPauseToken;
+
+        private IClock _clock;
+
+        private void Awake()
+        {
+            _clock = TimeManager.Clocks[ClockType.GamePlay];
+        }
+
+        [ContextMenu("Start Coroutine With Clock")]
+        private void StartCoroutineWithClock()
+        {
+            StartCoroutine(CoroutineWithClock());
+            return;
+            
+            IEnumerator CoroutineWithClock()
+            {
+                Debug.Log("Starting clock");
+                var seconds = 0f;
+                while (seconds < 10f)
+                {
+                    yield return _clock.WaitForSeconds(1f);
+                    seconds += 1f;
+                    Debug.Log("Seconds: " + seconds);
+                }
+                Debug.Log("Ending clock");
+            }
+        }
 
         [ContextMenu("Create TestSquares With Tween")]
         private void CreateTestSquareWithTween()
