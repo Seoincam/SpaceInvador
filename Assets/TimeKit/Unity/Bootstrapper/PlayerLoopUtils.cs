@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.LowLevel;
 
-namespace TimeKit.Unity
+namespace TimeKit.Unity.Bootstrapper
 {
     public static class PlayerLoopUtils
     {

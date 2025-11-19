@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.LowLevel;
 using UnityEngine.PlayerLoop;
 
-namespace TimeKit.Unity
+namespace TimeKit.Unity.Bootstrapper
 {
     internal static class TimeBootstrapper
     {
