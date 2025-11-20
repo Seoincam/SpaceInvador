@@ -14,7 +14,7 @@ namespace DefaultNamespace
     }
     
     [RequireComponent(typeof(Rigidbody2D), typeof(SpriteRenderer))]
-    public class Bullet : MonoBehaviour, IBullet, IClockAware
+    public class Bullet : MonoBehaviour, IBullet
     {
         [SerializeField] private float speed;
         [SerializeField] private LayerMask targetLayer;
@@ -28,7 +28,7 @@ namespace DefaultNamespace
         private Vector2 _direction;
         private Transform _safeArea;
 
-        public IClock Clock { get; set; }
+        private IClock _clock;
         public bool CanRetrieve { get; private set; }
         public GameObject GameObject => gameObject;
 
@@ -39,6 +39,8 @@ namespace DefaultNamespace
             _rb.freezeRotation = true;
             
             _renderer = GetComponent<SpriteRenderer>();
+
+            _clock = TimeManager.Clocks[ClockType.GamePlay];
         }
         
         private void OnDisable()
@@ -50,10 +52,11 @@ namespace DefaultNamespace
         
         private void FixedUpdate()
         {
-            if (Clock.IsStopped)
+            if (_clock.IsStopped)
                 return;
-            
-            Vector2 nextPos = _rb.position + _direction * (speed * Time.fixedDeltaTime);
+
+            Vector2 delta = _direction * (speed * Time.fixedDeltaTime * _clock.TimeScale);
+            Vector2 nextPos = _rb.position + delta;
             nextPos.x = nextPos.x switch
             {
                 > Bound => -Bound,

@@ -25,17 +25,17 @@ namespace DefaultNamespace
         [ContextMenu("Clock/set time scale 1f")]
         private void SetClockTimeScaleOne()
         {
-            _clock.TimeScale = 1f;
+            _clock.SetTimeScale(1f);
         }
         [ContextMenu("Clock/set time scale 0.5f")]
         private void SetClockTimeScaleHalf()
         {
-            _clock.TimeScale = .5f;
+            _clock.SetTimeScale(.5f);
         }
         [ContextMenu("Clock/set time scale 0f")]
         private void SetClockTimeScaleZero()
         {
-            _clock.TimeScale = 0f;
+            _clock.SetTimeScale(0f);
         }
         
         [ContextMenu("Start Coroutine With Clock")]

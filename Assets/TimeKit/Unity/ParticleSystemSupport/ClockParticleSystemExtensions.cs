@@ -1,3 +1,4 @@
+using TimeKit.Unity;
 using TimeKit.Unity.ParticleSystemSupport;
 using UnityEngine;
 
@@ -22,23 +23,7 @@ namespace TimeKit
             if (!particleSystem)
                 return;
 
-            ParticleSystemClockLink link = null;
-
-            var links = particleSystem.GetComponents<ParticleSystemClockLink>();
-            if (links != null)
-            {
-                foreach (var l in links)
-                {
-                    if (!l || l.Target != particleSystem) 
-                        continue;
-                    link = l;
-                    break;
-                }
-            }
-
-            if (!link)
-                link = particleSystem.gameObject.AddComponent<ParticleSystemClockLink>();
-            
+            var link = ClockLinkComponentUtils.GetOrAddLinkComponent<ParticleSystemClockLink, ParticleSystem>(particleSystem);
             link.Bind(clockType, particleSystem);
         }
     }

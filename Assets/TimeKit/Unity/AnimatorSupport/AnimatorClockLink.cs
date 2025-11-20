@@ -4,11 +4,13 @@ using UnityEngine;
 namespace TimeKit.Unity.AnimatorSupport
 {
     [AddComponentMenu("")]
-    public class AnimatorClockLink : ClockLinkComponent
+    public class AnimatorClockLink : ClockLinkComponent<Animator>
     {
-        internal Animator Target { get; private set; }
+        private Animator _target;
         private float _baseSpeed;
         private ClockType _clockType;
+        
+        internal override Animator Target => _target;
 
         public override void SyncWithClock(IReadOnlyClock clock)
         {
@@ -24,7 +26,7 @@ namespace TimeKit.Unity.AnimatorSupport
         internal void Bind(ClockType clockType, Animator animator)
         {
             _clockType = clockType;
-            Target = animator;
+            _target = animator;
             _baseSpeed = Target.speed;
         }
     }

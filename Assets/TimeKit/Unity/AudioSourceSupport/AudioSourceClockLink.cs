@@ -4,11 +4,13 @@ using UnityEngine;
 namespace TimeKit.Unity.AudioSourceSupport
 {
     [AddComponentMenu("")]
-    public class AudioSourceClockLink : ClockLinkComponent
+    public class AudioSourceClockLink : ClockLinkComponent<AudioSource>
     {
-        internal AudioSource Target { get; private set; }
+        private AudioSource _target;
         private float _basePitch;
         private ClockType _clockType;
+        
+        internal override AudioSource Target => _target;
         
         public override void SyncWithClock(IReadOnlyClock clock)
         {
@@ -27,7 +29,7 @@ namespace TimeKit.Unity.AudioSourceSupport
         internal void Bind(ClockType clockType, AudioSource audioSource)
         {
             _clockType = clockType;
-            Target = audioSource;
+            _target = audioSource;
             _basePitch = audioSource.pitch;
         }
     }
