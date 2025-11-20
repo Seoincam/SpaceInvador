@@ -1,3 +1,4 @@
+using TimeKit;
 using UnityEngine;
 
 namespace PlayerController
@@ -13,7 +14,8 @@ namespace PlayerController
         [SerializeField] private float moveSpeed;
 
         private const float Bound = 8.5f;
-        
+
+        private IClock _clock;
         private Rigidbody2D _rb;
         private Vector2 _moveInput;
 
@@ -22,12 +24,15 @@ namespace PlayerController
             _rb = GetComponent<Rigidbody2D>();
             _rb.gravityScale = 0;
             _rb.freezeRotation = true;
+
+            _clock = TimeManager.Clocks[ClockType.GamePlay];
         }
 
         private void FixedUpdate()
         {
             // Wrap
-            Vector2 nextPos = _rb.position + _moveInput * (moveSpeed * Time.fixedDeltaTime);
+            Vector2 delta = _moveInput * (moveSpeed * Time.fixedDeltaTime * _clock.TimeScale);
+            Vector2 nextPos = _rb.position + delta;
             nextPos.x = nextPos.x switch
             {
                 > Bound => -Bound,
