@@ -3,6 +3,9 @@ namespace TimeKit
     public enum ClockType
     {
         GamePlay,
-        UI
+        UI,
+        Test1,
+        Test2,
+        Test3
     }
 }

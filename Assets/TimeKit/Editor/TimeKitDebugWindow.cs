@@ -10,10 +10,22 @@ namespace TimeKit.Editor
 {
     public class TimeKitDebugWindow : EditorWindow
     {
-        private ScrollView _rightPane;
-        private Label _timeLabel;
-        private IVisualElementScheduledItem _rightPaneSchedule;
-        private ClockType? _selectedClockType;
+        /*
+         * 추후 Package로 만들면 아래 방법 사용!!
+         * AssetDatabase.LoadAssetAtPath<VisualTreeAsset>("Packages/<name-of-the-package>/main_window.uxml");
+         * https://docs.unity3d.com/kr/2023.2/Manual/UIE-manage-asset-reference.html
+         */
+        
+        private const string UxmlPath = "Assets/TimeKit/Editor/TimeKitDebug.uxml";
+        private VisualTreeAsset _uxml;
+
+        private TabView _tabView;
+        private Tab _summaryTab;
+        private Tab _clockTypesTab;
+        private MultiColumnListView _summaryMcList;
+        
+        private enum TabId { Summary, ClockTypes }
+        private TabId _activeTabId;
         
         [MenuItem("Window/TimeKit/Debug")]
         public static void OpenWindow()
@@ -23,180 +35,93 @@ namespace TimeKit.Editor
 
         private void CreateGUI()
         {
+            var root = rootVisualElement;
+            
+            if (!_uxml)
+                _uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(UxmlPath);
+            if (!_uxml)
+            {
+                var noUxmlWarning = new HelpBox($"UXML not found at: {UxmlPath}", HelpBoxMessageType.Error);
+                root.Add(noUxmlWarning);
+                return;
+            }
+
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
             
-            RebuildUI(EditorApplication.isPlaying);
-        }
+            RebuildUI(Application.isPlaying);
 
-        private void OnDisable()
-        {
-            EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
-        }
-
-        private void OnPlayModeStateChanged(PlayModeStateChange state)
-        {
-            RebuildUI(EditorApplication.isPlaying);
+            
+            return;
+            void OnPlayModeStateChanged(PlayModeStateChange state)
+            {
+                RebuildUI(EditorApplication.isPlaying);
+            }
         }
 
         private void RebuildUI(bool isPlaying)
         {
             var root = rootVisualElement;
             root.Clear();
-            root.style.flexDirection = FlexDirection.Column;
             
-            // 제목 라벨 
-            var titleLabel = new Label("TimeKit Debug")
-            {
-                style =
-                {
-                    unityFontStyleAndWeight = FontStyle.Bold,
-                    paddingBottom = 8f
-                }
-            };
-            root.Add(titleLabel);
-
-            // Play 모드 가드
             if (!isPlaying)
             {
-                var helpBox = new HelpBox("Play Mode에서만 TimeKit 상태를 볼 수 있습니다.", HelpBoxMessageType.Info);
-                root.Add(helpBox);
+                var help = new HelpBox("Play Mode에서만 TimeKit 상태를 볼 수 있습니다.", HelpBoxMessageType.Info);
+                root.Add(help);
                 return;
             }
+
+            root.Add( _uxml.Instantiate());
+            var mcList = root.Q<MultiColumnListView>();
+            mcList.showAlternatingRowBackgrounds = AlternatingRowBackground.All;
             
-            // enum 리스트 만들기
-            var allClockTypes = Enum.GetValues(typeof(ClockType))
+            /*
+             * 데이터 처리.
+             * TODO 추후 Core 로직으로 옮겨서 따로 처리하기!
+             */
+            var clockTypes = Enum.GetValues(typeof(ClockType))
                 .Cast<ClockType>()
-                .ToList();
+                .ToArray();
+            var clocks = new IClock[clockTypes.Length];
+            for (int i = 0; i < clockTypes.Length; i++)
+                clocks[i] = TimeManager.Clocks[clockTypes[i]];
             
-            // SplitView 생성
-            var splitView = new TwoPaneSplitView(0, 250, TwoPaneSplitViewOrientation.Horizontal);
-            root.Add(splitView);
+            // itemSource
+            mcList.itemsSource = clocks;
             
-            // 왼쪽 ListView
-            var leftPane = LeftPane();
-            splitView.Add(leftPane);
+            // makeCell
+            var columnNames = new[] { "clock-type", "time", "delta-time", "time-scale" };
+            foreach (var s in columnNames)
+                mcList.columns[s].makeCell = () =>
+                {
+                    var label = new Label();
+                    label.style.unityTextAlign = TextAnchor.MiddleLeft;
+                    label.style.height = Length.Percent(100);
+                    label.style.paddingLeft = 8f;
+                    return label;
+                };
             
-            // 오른쪽 Pane
-            _rightPane = RightPane();
-            splitView.Add(_rightPane);
-        }
-
-        private ListView LeftPane()
-        {
-            var allClockTypes = Enum.GetValues(typeof(ClockType))
-                .Cast<ClockType>()
-                .ToList();
-            
-            var leftPane = new ListView();
-            
-            leftPane.itemsSource = allClockTypes;
-            leftPane.makeItem = () => new Label();
-            leftPane.bindItem = (item, index) =>
+            // bindCell
+            mcList.columns["clock-type"].bindCell = (e, index) =>
             {
-                (item as Label).text = allClockTypes[index].ToString();
+                (e as Label).text = clocks[index].Type.ToString();
+                (e as Label).style.unityFontStyleAndWeight = FontStyle.Bold;
+                (e as Label).style.color = Color.yellow;
             };
-            leftPane.selectionChanged += OnClockSelectionChanged;
-
-            return leftPane;
-        }
-
-        private ScrollView RightPane()
-        {
-            var rightPane = new ScrollView(ScrollViewMode.VerticalAndHorizontal);
-            rightPane.style.paddingLeft = 8f;
-            UpdateRightPane(rightPane);
-            return rightPane;
-        }
-
-        private void UpdateRightPane(ScrollView rightPane)
-        {
-            rightPane.Clear();
-            
-            if (_selectedClockType == null)
+            mcList.columns["time"].bindCell = (e, index) =>
             {
-                var helpBox = new HelpBox("Select a Clock.", HelpBoxMessageType.Info);
-                rightPane.Add(helpBox);
-                return;
-            }
-
-            IClock clock = TimeManager.Clocks[_selectedClockType.Value];
-
-            // 이름
-            var clockStateLabel = new Label($"{_selectedClockType} (Resumed)");
-            clockStateLabel.style.unityFontStyleAndWeight = FontStyle.Bold;
-            rightPane.Add(clockStateLabel);
-
-            var group1 = new GroupBox();
-            // 시간
-            var timeLabel = new Label($"Time: {clock.Time:F2}s");
-            group1.Add(timeLabel);
-            // delta time
-            var deltaTimeLabel = new Label($"DeltaTime: {clock.DeltaTime:F3}");
-            group1.Add(deltaTimeLabel);
-            rightPane.Add(group1);
-            
-            var group2 = new GroupBox();
-            // TimeScale
-            var timeScaleHeader = new Label("TimeScale");
-            timeScaleHeader.style.unityFontStyleAndWeight = FontStyle.Bold;
-            group2.Add(timeScaleHeader);
-            var timeScaleLabel = new Label(clock.TimeScale.ToString());
-            group2.Add(timeScaleLabel);
-            rightPane.Add(group2);
-        }
-
-        private void OnClockSelectionChanged(IEnumerable<object> selectedItems)
-        {
-            if (selectedItems.First() is not ClockType clock)
-                return;
-
-            // _rightPaneSchedule.Pause();
-            _selectedClockType = clock;
-            UpdateRightPane(_rightPane);
-        }
-
-        #region RightPane
-
-        private void DrawRightPane()
-        {
-            _rightPane.Clear();
-            
-            if (_selectedClockType == null)
-            {
-                var helpBox = new HelpBox("Select a Clock.", HelpBoxMessageType.Info);
-                _rightPane.Add(helpBox);
-                return;
-            }
-
-            IClock clock = TimeManager.Clocks[(ClockType)_selectedClockType];
-            DrawClockHeader(clock);
-
-            _rightPaneSchedule = _rightPane.schedule
-                .Execute(() => UpdateTimeLabel(clock.Time))
-                .Every(1000);
-        }
-
-        private void DrawClockHeader(IClock clock)
-        {
-            var nameLabel = new Label($"{clock.Type}")
-            {
-                style = { unityFontStyleAndWeight = FontStyle.Bold }
+                // 1h 23m 32.23s 스타일로!
+                (e as Label).text = clocks[index].Time.ToString("F2");
             };
-            _rightPane.Add(nameLabel);
-            
-            _timeLabel = new Label();
-            UpdateTimeLabel(clock.Time);
-            _rightPane.Add(_timeLabel);
+            mcList.columns["delta-time"].bindCell = (e, index) =>
+            {
+                (e as Label).text = clocks[index].DeltaTime.ToString("F3");
+            };
+            mcList.columns["time-scale"].bindCell = (e, index) =>
+            {
+                (e as Label).text = clocks[index].TimeScale.ToString("F1");
+            };
         }
-        private void UpdateTimeLabel(double time)
-        {
-            _timeLabel.text = time.ToString("F3");
-        }
-
-        #endregion
-
-
     }
 }
 #endif
