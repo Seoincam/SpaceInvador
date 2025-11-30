@@ -8,9 +8,6 @@ namespace TimeKit.Unity.Link.Core
             where TTarget : Component
             where TLink : ClockLinkComponent<TTarget>
         {
-            if (!target)
-                return;
-            
             var link = ClockLinkUtils.GetOrAddLinkComponent<TTarget, TLink>(target);
             link.Bind(type, target);
         }
@@ -22,7 +19,7 @@ namespace TimeKit.Unity.Link.Core
             if (!ClockLinkUtils.TryGetLink<TTarget, TLink>(target, out var link))
                 return false;
             
-            // link.Unbind(type, target)
+            link.Unbind();
             return true;
         }
     }

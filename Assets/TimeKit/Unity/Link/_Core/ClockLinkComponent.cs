@@ -16,6 +16,7 @@ namespace TimeKit.Unity.Link.Core
         }
 
         internal abstract void Bind(ClockType type, T target);
+        internal abstract void Unbind();
         
         public abstract void SyncWithClock(IReadOnlyClock clock);
 

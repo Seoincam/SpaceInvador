@@ -12,6 +12,20 @@ namespace TimeKit.Unity.Link.Animation
         
         internal override Animator Target => _target;
         public override ClockType Type => _clockType;
+        
+        internal override void Bind(ClockType clockType, Animator animator)
+        {
+            _clockType = clockType;
+            _target = animator;
+            _baseSpeed = Target.speed;
+            
+            TimeManager.GetRealClock(clockType).linked.Register(this);
+        }
+
+        internal override void Unbind()
+        {
+            TimeManager.GetRealClock(_clockType).linked.Unregister(this);
+        }
 
         public override void SyncWithClock(IReadOnlyClock clock)
         {
@@ -22,15 +36,6 @@ namespace TimeKit.Unity.Link.Animation
                 Target.speed = 0f;
             else
                 Target.speed = _baseSpeed * clock.TimeScale;
-        }
-
-        internal override void Bind(ClockType clockType, Animator animator)
-        {
-            _clockType = clockType;
-            _target = animator;
-            _baseSpeed = Target.speed;
-            
-            TimeManager.GetRealClock(clockType).linked.Register(this);
         }
     }
 }

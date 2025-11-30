@@ -14,6 +14,20 @@ namespace TimeKit.Unity.Link.Rb
 
         internal override Rigidbody Target => _target;
         public override ClockType Type => _clockType;
+        
+        internal override void Bind(ClockType clockType, Rigidbody rb)
+        {
+            _clockType = clockType;
+            _target = rb;
+            CacheVelocity();
+            
+            TimeManager.GetRealClock(clockType).linked.Register(this);
+        }
+
+        internal override void Unbind()
+        {
+            TimeManager.GetRealClock(_clockType).linked.Unregister(this);
+        }
 
         public override void SyncWithClock(IReadOnlyClock clock)
         {
@@ -33,15 +47,6 @@ namespace TimeKit.Unity.Link.Rb
                 Target.linearVelocity = _baseLinearVelocity * clock.TimeScale;
                 Target.angularVelocity = _baseAngularVelocity * clock.TimeScale;
             }
-        }
-
-        internal override void Bind(ClockType clockType, Rigidbody rb)
-        {
-            _clockType = clockType;
-            _target = rb;
-            CacheVelocity();
-            
-            TimeManager.GetRealClock(clockType).linked.Register(this);
         }
 
         private void CacheVelocity()

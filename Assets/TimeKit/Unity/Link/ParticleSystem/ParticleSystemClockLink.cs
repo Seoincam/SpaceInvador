@@ -12,6 +12,20 @@ namespace TimeKit.Unity.Link.Particle
 
         internal override ParticleSystem Target => _target;
         public override ClockType Type => _clockType;
+        
+        internal override void Bind(ClockType clockType, ParticleSystem system)
+        {
+            _clockType = clockType;
+            _target = system;
+            _baseSimulationSpeed = system.main.simulationSpeed;
+            
+            TimeManager.GetRealClock(clockType).linked.Register(this);
+        }
+
+        internal override void Unbind()
+        {
+            TimeManager.GetRealClock(_clockType).linked.Unregister(this);
+        }
 
         public override void SyncWithClock(IReadOnlyClock clock)
         {
@@ -23,15 +37,6 @@ namespace TimeKit.Unity.Link.Particle
                 main.simulationSpeed = 0f;
             else
                 main.simulationSpeed = _baseSimulationSpeed * clock.TimeScale;
-        }
-
-        internal override void Bind(ClockType clockType, ParticleSystem system)
-        {
-            _clockType = clockType;
-            _target = system;
-            _baseSimulationSpeed = system.main.simulationSpeed;
-            
-            TimeManager.GetRealClock(clockType).linked.Register(this);
         }
     }
 }

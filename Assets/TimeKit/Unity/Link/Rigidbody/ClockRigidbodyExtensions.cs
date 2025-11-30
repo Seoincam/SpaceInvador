@@ -2,7 +2,7 @@ using TimeKit.Unity.Link.Core;
 using TimeKit.Unity.Link.Rb;
 using UnityEngine;
 
-namespace TimeKit.Unity.RigidbodySupport
+namespace TimeKit
 {
     public static class ClockRigidbodyExtensions
     {

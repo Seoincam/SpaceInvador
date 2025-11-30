@@ -12,6 +12,20 @@ namespace TimeKit.Unity.Link.Audio
         
         internal override AudioSource Target => _target;
         public override ClockType Type => _clockType;
+        
+        internal override void Bind(ClockType clockType, AudioSource audioSource)
+        {
+            _clockType = clockType;
+            _target = audioSource;
+            _basePitch = audioSource.pitch;
+            
+            TimeManager.GetRealClock(clockType).linked.Register(this);
+        }
+
+        internal override void Unbind()
+        {
+            TimeManager.GetRealClock(_clockType).linked.Unregister(this);
+        }
 
         public override void SyncWithClock(IReadOnlyClock clock)
         {
@@ -25,15 +39,6 @@ namespace TimeKit.Unity.Link.Audio
                 Target.UnPause();
                 Target.pitch = _basePitch * clock.TimeScale;
             }
-        }
-
-        internal override void Bind(ClockType clockType, AudioSource audioSource)
-        {
-            _clockType = clockType;
-            _target = audioSource;
-            _basePitch = audioSource.pitch;
-            
-            TimeManager.GetRealClock(clockType).linked.Register(this);
         }
     }
 }

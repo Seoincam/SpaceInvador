@@ -19,7 +19,7 @@ namespace TimeKit.Unity.Link.Core
             {
                 foreach (var link in links)
                 {
-                    if (!link || link.Target != target) 
+                    if (!link || link.Target) 
                         continue;
                     targetLink = link;
                     break;
