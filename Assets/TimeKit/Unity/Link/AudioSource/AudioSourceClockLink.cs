@@ -27,7 +27,7 @@ namespace TimeKit.Unity.Link.Audio
             }
         }
 
-        internal void Bind(ClockType clockType, AudioSource audioSource)
+        internal override void Bind(ClockType clockType, AudioSource audioSource)
         {
             _clockType = clockType;
             _target = audioSource;

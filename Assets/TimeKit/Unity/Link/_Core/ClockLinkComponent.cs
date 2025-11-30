@@ -14,6 +14,8 @@ namespace TimeKit.Unity.Link.Core
         {
             hideFlags = HideFlags.HideInInspector;
         }
+
+        internal abstract void Bind(ClockType type, T target);
         
         public abstract void SyncWithClock(IReadOnlyClock clock);
 

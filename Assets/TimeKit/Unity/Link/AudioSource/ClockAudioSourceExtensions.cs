@@ -8,23 +8,26 @@ namespace TimeKit
     {
         public static IClock SetLink(this IClock clock, AudioSource audioSource)
         {
-            Bind(clock.Type, audioSource);
+            ClockLinkBinder.Bind<AudioSource, AudioSourceClockLink>(clock.Type, audioSource);
+            return clock;
+        }
+
+        public static IClock Unlink(this IClock clock, AudioSource audioSource)
+        {
+            ClockLinkBinder.Unbind<AudioSource, AudioSourceClockLink>(clock.Type, audioSource);
             return clock;
         }
 
         public static AudioSource WithClock(this AudioSource audioSource, IReadOnlyClock clock)
         {
-            Bind(clock.Type, audioSource);
+            ClockLinkBinder.Bind<AudioSource, AudioSourceClockLink>(clock.Type, audioSource);
             return audioSource;
         }
 
-        private static void Bind(ClockType clockType, AudioSource audioSource)
+        public static AudioSource UnlinkClock(this AudioSource audioSource, IReadOnlyClock clock)
         {
-            if (!audioSource)
-                return;
-
-            var link = ClockLinkComponentUtils.GetOrAddLinkComponent<AudioSourceClockLink, AudioSource>(audioSource);
-            link.Bind(clockType, audioSource);
+            ClockLinkBinder.Unbind<AudioSource, AudioSourceClockLink>(clock.Type, audioSource);
+            return audioSource;
         }
     }
 }

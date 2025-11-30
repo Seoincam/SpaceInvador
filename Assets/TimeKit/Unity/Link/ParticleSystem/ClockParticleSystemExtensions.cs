@@ -8,23 +8,26 @@ namespace TimeKit
     {
         public static IClock SetLink(this IClock clock, ParticleSystem particleSystem)
         {
-            Bind(clock.Type, particleSystem);
+            ClockLinkBinder.Bind<ParticleSystem, ParticleSystemClockLink>(clock.Type, particleSystem);
+            return clock;
+        }
+
+        public static IClock Unlink(this IClock clock, ParticleSystem particleSystem)
+        {
+            ClockLinkBinder.Unbind<ParticleSystem, ParticleSystemClockLink>(clock.Type, particleSystem);
             return clock;
         }
 
         public static ParticleSystem WithClock(this ParticleSystem particleSystem, IReadOnlyClock clock)
         {
-            Bind(clock.Type, particleSystem);
+            ClockLinkBinder.Bind<ParticleSystem, ParticleSystemClockLink>(clock.Type, particleSystem);
             return particleSystem;
         }
-
-        private static void Bind(ClockType clockType, ParticleSystem particleSystem)
+        
+        public static ParticleSystem UnlinkClock(this ParticleSystem particleSystem, IReadOnlyClock clock)
         {
-            if (!particleSystem)
-                return;
-
-            var link = ClockLinkComponentUtils.GetOrAddLinkComponent<ParticleSystemClockLink, ParticleSystem>(particleSystem);
-            link.Bind(clockType, particleSystem);
+            ClockLinkBinder.Unbind<ParticleSystem, ParticleSystemClockLink>(clock.Type, particleSystem);
+            return particleSystem;
         }
     }
 }

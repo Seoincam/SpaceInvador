@@ -35,7 +35,7 @@ namespace TimeKit.Unity.Link.Rb
             }
         }
 
-        internal void Bind(ClockType clockType, Rigidbody2D rb)
+        internal override void Bind(ClockType clockType, Rigidbody2D rb)
         {
             _clockType = clockType;
             _target = rb;

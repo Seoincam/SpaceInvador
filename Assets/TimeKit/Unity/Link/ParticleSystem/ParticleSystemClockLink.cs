@@ -25,7 +25,7 @@ namespace TimeKit.Unity.Link.Particle
                 main.simulationSpeed = _baseSimulationSpeed * clock.TimeScale;
         }
 
-        internal void Bind(ClockType clockType, ParticleSystem system)
+        internal override void Bind(ClockType clockType, ParticleSystem system)
         {
             _clockType = clockType;
             _target = system;

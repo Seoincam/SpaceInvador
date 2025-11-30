@@ -24,7 +24,7 @@ namespace TimeKit.Unity.Link.Animation
                 Target.speed = _baseSpeed * clock.TimeScale;
         }
 
-        internal void Bind(ClockType clockType, Animator animator)
+        internal override void Bind(ClockType clockType, Animator animator)
         {
             _clockType = clockType;
             _target = animator;
