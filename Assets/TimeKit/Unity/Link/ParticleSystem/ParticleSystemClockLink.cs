@@ -19,12 +19,12 @@ namespace TimeKit.Unity.Link.Particle
             _target = system;
             _baseSimulationSpeed = system.main.simulationSpeed;
             
-            TimeManager.GetRealClock(clockType).linked.Register(this);
+            TimeManager.GetRealClock(clockType).Linked.Register(this);
         }
 
         internal override void Unbind()
         {
-            TimeManager.GetRealClock(_clockType).linked.Unregister(this);
+            TimeManager.GetRealClock(_clockType).Linked.Unregister(this);
         }
 
         public override void SyncWithClock(IReadOnlyClock clock)

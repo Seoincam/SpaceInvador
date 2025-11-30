@@ -7,8 +7,8 @@ namespace TimeKit
     [Serializable]
     internal sealed class Clock : IClock
     {
-        internal ClockLinkedGroup linked;
-        
+        internal ClockLinkedGroup Linked { get; } 
+
         public double Time { get; private set; }
 
         public float DeltaTime { get; private set; }
@@ -27,7 +27,7 @@ namespace TimeKit
         {
             Type = type;
             TimeScale = 1f;
-            linked = new ClockLinkedGroup(this);
+            Linked = new ClockLinkedGroup(this);
         }
         
         public void Tick(float unscaledDeltaTime)
