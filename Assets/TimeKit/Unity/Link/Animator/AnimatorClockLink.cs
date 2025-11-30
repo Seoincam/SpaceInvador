@@ -1,7 +1,7 @@
-using TimeKit.Unity.Base;
+using TimeKit.Unity.Link.Core;
 using UnityEngine;
 
-namespace TimeKit.Unity.AnimatorSupport
+namespace TimeKit.Unity.Link.Animation
 {
     [AddComponentMenu("")]
     public class AnimatorClockLink : ClockLinkComponent<Animator>
@@ -12,6 +12,20 @@ namespace TimeKit.Unity.AnimatorSupport
         
         internal override Animator Target => _target;
         public override ClockType Type => _clockType;
+        
+        internal override void Bind(ClockType clockType, Animator animator)
+        {
+            _clockType = clockType;
+            _target = animator;
+            _baseSpeed = Target.speed;
+            
+            TimeManager.GetRealClock(clockType).Linked.Register(this);
+        }
+
+        internal override void Unbind()
+        {
+            TimeManager.GetRealClock(_clockType).Linked.Unregister(this);
+        }
 
         public override void SyncWithClock(IReadOnlyClock clock)
         {
@@ -22,15 +36,6 @@ namespace TimeKit.Unity.AnimatorSupport
                 Target.speed = 0f;
             else
                 Target.speed = _baseSpeed * clock.TimeScale;
-        }
-
-        internal void Bind(ClockType clockType, Animator animator)
-        {
-            _clockType = clockType;
-            _target = animator;
-            _baseSpeed = Target.speed;
-            
-            TimeManager.GetRealClock(clockType).linked.Register(this);
         }
     }
 }

@@ -4,9 +4,9 @@ using UnityEngine.LowLevel;
 
 namespace TimeKit.Unity.Bootstrapper
 {
-    public static class PlayerLoopUtils
+    internal static class PlayerLoopUtils
     {
-        public static bool InsertSystem<T>(ref PlayerLoopSystem loopSystem, in PlayerLoopSystem systemToInsert,
+        internal static bool InsertSystem<T>(ref PlayerLoopSystem loopSystem, in PlayerLoopSystem systemToInsert,
             int index)
         {
             if (loopSystem.type == typeof(T))
@@ -46,7 +46,7 @@ namespace TimeKit.Unity.Bootstrapper
             return false;
         }
 
-        public static bool RemoveSystem<T>(ref PlayerLoopSystem loopSystem, in PlayerLoopSystem systemToRemove)
+        internal static bool RemoveSystem<T>(ref PlayerLoopSystem loopSystem, in PlayerLoopSystem systemToRemove)
         {
             if (loopSystem.type == typeof(T))
             {

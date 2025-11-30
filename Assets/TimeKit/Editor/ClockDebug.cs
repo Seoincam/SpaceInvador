@@ -53,7 +53,7 @@ namespace TimeKit.Editor
             internal float TimeScale => _clock.TimeScale;
             internal bool IsStopped => _clock.IsStopped;
 
-            internal List<IClockLinked> Linked => _clock.linked.Group;
+            internal List<IClockLinked> Linked => _clock.Linked.Group;
             
             internal ClockDebugInfo(ClockType clockType)
             {

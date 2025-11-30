@@ -1,7 +1,7 @@
-using TimeKit.Unity.Base;
+using TimeKit.Unity.Link.Core;
 using UnityEngine;
 
-namespace TimeKit.Unity.ParticleSystemSupport
+namespace TimeKit.Unity.Link.Particle
 {
     [AddComponentMenu("")]
     public class ParticleSystemClockLink : ClockLinkComponent<ParticleSystem>
@@ -12,6 +12,20 @@ namespace TimeKit.Unity.ParticleSystemSupport
 
         internal override ParticleSystem Target => _target;
         public override ClockType Type => _clockType;
+        
+        internal override void Bind(ClockType clockType, ParticleSystem system)
+        {
+            _clockType = clockType;
+            _target = system;
+            _baseSimulationSpeed = system.main.simulationSpeed;
+            
+            TimeManager.GetRealClock(clockType).Linked.Register(this);
+        }
+
+        internal override void Unbind()
+        {
+            TimeManager.GetRealClock(_clockType).Linked.Unregister(this);
+        }
 
         public override void SyncWithClock(IReadOnlyClock clock)
         {
@@ -23,15 +37,6 @@ namespace TimeKit.Unity.ParticleSystemSupport
                 main.simulationSpeed = 0f;
             else
                 main.simulationSpeed = _baseSimulationSpeed * clock.TimeScale;
-        }
-
-        internal void Bind(ClockType clockType, ParticleSystem system)
-        {
-            _clockType = clockType;
-            _target = system;
-            _baseSimulationSpeed = system.main.simulationSpeed;
-            
-            TimeManager.GetRealClock(clockType).linked.Register(this);
         }
     }
 }

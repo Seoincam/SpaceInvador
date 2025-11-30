@@ -2,7 +2,7 @@ using System.Diagnostics;
 using TimeKit.Core.Linked;
 using UnityEngine;
 
-namespace TimeKit.Unity.Base
+namespace TimeKit.Unity.Link.Core
 {
     public abstract class ClockLinkComponent<T>: MonoBehaviour, IClockSyncLinked where T : Component
     {
@@ -14,12 +14,15 @@ namespace TimeKit.Unity.Base
         {
             hideFlags = HideFlags.HideInInspector;
         }
+
+        internal abstract void Bind(ClockType type, T target);
+        internal abstract void Unbind();
         
         public abstract void SyncWithClock(IReadOnlyClock clock);
 
         private void OnDestroy()
         {
-            TimeManager.GetRealClock(Type).linked.Unregister(this);
+            TimeManager.GetRealClock(Type).Linked.Unregister(this);
         }
 
         public string Trace

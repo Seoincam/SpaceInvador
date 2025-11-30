@@ -1,7 +1,7 @@
-using TimeKit.Unity.Base;
+using TimeKit.Unity.Link.Core;
 using UnityEngine;
 
-namespace TimeKit.Unity.AudioSourceSupport
+namespace TimeKit.Unity.Link.Audio
 {
     [AddComponentMenu("")]
     public class AudioSourceClockLink : ClockLinkComponent<AudioSource>
@@ -12,6 +12,20 @@ namespace TimeKit.Unity.AudioSourceSupport
         
         internal override AudioSource Target => _target;
         public override ClockType Type => _clockType;
+        
+        internal override void Bind(ClockType clockType, AudioSource audioSource)
+        {
+            _clockType = clockType;
+            _target = audioSource;
+            _basePitch = audioSource.pitch;
+            
+            TimeManager.GetRealClock(clockType).Linked.Register(this);
+        }
+
+        internal override void Unbind()
+        {
+            TimeManager.GetRealClock(_clockType).Linked.Unregister(this);
+        }
 
         public override void SyncWithClock(IReadOnlyClock clock)
         {
@@ -25,15 +39,6 @@ namespace TimeKit.Unity.AudioSourceSupport
                 Target.UnPause();
                 Target.pitch = _basePitch * clock.TimeScale;
             }
-        }
-
-        internal void Bind(ClockType clockType, AudioSource audioSource)
-        {
-            _clockType = clockType;
-            _target = audioSource;
-            _basePitch = audioSource.pitch;
-            
-            TimeManager.GetRealClock(clockType).linked.Register(this);
         }
     }
 }

@@ -1,19 +1,33 @@
-using TimeKit.Unity.Base;
+using TimeKit.Unity.Link.Core;
 using UnityEngine;
 
-namespace TimeKit.Unity.RigidbodySupport
+namespace TimeKit.Unity.Link.Rb
 {
     [AddComponentMenu("")]
-    public class RigidbodyClockLink : ClockLinkComponent<Rigidbody>
+    public class Rigidbody2DClockLink : ClockLinkComponent<Rigidbody2D>
     {
-        private Rigidbody _target;
-        private Vector3 _baseLinearVelocity;
-        private Vector3 _baseAngularVelocity;
+        private Rigidbody2D _target;
+        private Vector2 _baseLinearVelocity;
+        private float _baseAngularVelocity;
         private bool _cached;
         private ClockType _clockType;
 
-        internal override Rigidbody Target => _target;
+        internal override Rigidbody2D Target => _target;
         public override ClockType Type => _clockType;
+        
+        internal override void Bind(ClockType clockType, Rigidbody2D rb)
+        {
+            _clockType = clockType;
+            _target = rb;
+            CacheVelocity();
+            
+            TimeManager.GetRealClock(clockType).Linked.Register(this);
+        }
+
+        internal override void Unbind()
+        {
+            TimeManager.GetRealClock(_clockType).Linked.Unregister(this);
+        }
 
         public override void SyncWithClock(IReadOnlyClock clock)
         {
@@ -22,26 +36,17 @@ namespace TimeKit.Unity.RigidbodySupport
             
             if (!_cached)
                 CacheVelocity();
-            
+
             if (clock.IsStopped)
             {
-                Target.linearVelocity = Vector3.zero;
-                Target.angularVelocity = Vector3.zero;
+                Target.linearVelocity = Vector2.zero;
+                Target.angularVelocity = 0;
             }
             else
             {
                 Target.linearVelocity = _baseLinearVelocity * clock.TimeScale;
                 Target.angularVelocity = _baseAngularVelocity * clock.TimeScale;
             }
-        }
-
-        internal void Bind(ClockType clockType, Rigidbody rb)
-        {
-            _clockType = clockType;
-            _target = rb;
-            CacheVelocity();
-            
-            TimeManager.GetRealClock(clockType).linked.Register(this);
         }
 
         private void CacheVelocity()

@@ -32,7 +32,7 @@ namespace TimeKit
             _readyAt = 0;
 
             _realClock = TimeManager.GetRealClock(_clock.Type);
-            _realClock.linked.Register(this);
+            _realClock.Linked.Register(this);
 
 #if UNITY_EDITOR
             Trace = $"{file}:{line} {member}";
@@ -98,7 +98,7 @@ namespace TimeKit
         
         public void Dispose()
         {
-            _realClock.linked.Unregister(this);
+            _realClock.Linked.Unregister(this);
         }
         
         [DebuggerHidden]
