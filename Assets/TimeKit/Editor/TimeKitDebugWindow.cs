@@ -1,7 +1,4 @@
 #if UNITY_EDITOR
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -21,11 +18,17 @@ namespace TimeKit.Editor
 
         private TabView _tabView;
         private Tab _summaryTab;
+        private Tab _detailTab;
         private Tab _clockTypesTab;
+        
         private MultiColumnListView _summaryMcList;
+        private MultiColumnListView _detailMcList;
+        private EnumField _detailClockTypeEnumField;
         
         private enum TabId { Summary, ClockTypes }
         private TabId _activeTabId;
+
+        private IVisualElementScheduledItem _updateSchedule;
         
         [MenuItem("Window/TimeKit/Debug")]
         public static void OpenWindow()
@@ -49,20 +52,36 @@ namespace TimeKit.Editor
             EditorApplication.playModeStateChanged -= OnPlayModeStateChanged;
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
             
-            RebuildUI(Application.isPlaying);
+            BuildUIFromUxml(EditorApplication.isPlaying);
+            HookTabEvents();
+            SetupUpdateLoop();
 
             
             return;
             void OnPlayModeStateChanged(PlayModeStateChange state)
             {
-                RebuildUI(EditorApplication.isPlaying);
+                BuildUIFromUxml(EditorApplication.isPlaying);
             }
         }
-
-        private void RebuildUI(bool isPlaying)
+        
+        private void BuildUIFromUxml(bool isPlaying)
         {
             var root = rootVisualElement;
             root.Clear();
+
+            // 생성 및 Query
+            var tree = _uxml.Instantiate();
+            root.Add(tree);
+
+            _tabView = root.Q<TabView>("timekit-tab-view");
+            _summaryTab = root.Q<Tab>("summary-tab");
+            _clockTypesTab = root.Q<Tab>("clock-types-tab");
+            _detailTab = root.Q<Tab>("detail-tab");
+
+            _summaryMcList = root.Q<MultiColumnListView>("clocks-mc-list");
+            _detailMcList = root.Q<MultiColumnListView>("linked-detail-mc-list");
+            _detailClockTypeEnumField = root.Q<EnumField>("clock-type");
+            _detailClockTypeEnumField.Init(ClockType.GamePlay);
             
             if (!isPlaying)
             {
@@ -71,56 +90,139 @@ namespace TimeKit.Editor
                 return;
             }
 
-            root.Add( _uxml.Instantiate());
-            var mcList = root.Q<MultiColumnListView>();
-            mcList.showAlternatingRowBackgrounds = AlternatingRowBackground.All;
-            
-            /*
-             * 데이터 처리.
-             * TODO 추후 Core 로직으로 옮겨서 따로 처리하기!
-             */
-            var clockTypes = Enum.GetValues(typeof(ClockType))
-                .Cast<ClockType>()
-                .ToArray();
-            var clocks = new IClock[clockTypes.Length];
-            for (int i = 0; i < clockTypes.Length; i++)
-                clocks[i] = TimeManager.Clocks[clockTypes[i]];
+            ConfigSummaryMcList();
+            ConfigDetailMcList();
+        }
+
+        private void ConfigSummaryMcList()
+        {
+            _summaryMcList.showAlternatingRowBackgrounds = AlternatingRowBackground.All;
             
             // itemSource
-            mcList.itemsSource = clocks;
+            _summaryMcList.itemsSource = ClockDebug.Infos;
             
             // makeCell
-            var columnNames = new[] { "clock-type", "time", "delta-time", "time-scale" };
+            var columnNames = new[] { "clock-type", "time", "delta-time", "time-scale", "linked" };
             foreach (var s in columnNames)
-                mcList.columns[s].makeCell = () =>
-                {
-                    var label = new Label();
-                    label.style.unityTextAlign = TextAnchor.MiddleLeft;
-                    label.style.height = Length.Percent(100);
-                    label.style.paddingLeft = 8f;
-                    return label;
-                };
+            {
+                _summaryMcList.columns[s].makeCell = () => new Label
+                    {
+                        style =
+                        {
+                            unityTextAlign = TextAnchor.MiddleLeft,
+                            height = Length.Percent(100),
+                            paddingLeft = 8f
+                        }
+                    };
+            }
             
             // bindCell
-            mcList.columns["clock-type"].bindCell = (e, index) =>
+            _summaryMcList.columns["clock-type"].bindCell = (e, index) =>
             {
-                (e as Label).text = clocks[index].Type.ToString();
-                (e as Label).style.unityFontStyleAndWeight = FontStyle.Bold;
-                (e as Label).style.color = Color.yellow;
+                var info = ClockDebug.Infos[index];
+                var label = e as Label;
+                
+                label.text = info.Type.ToString();
+                label.style.unityFontStyleAndWeight = FontStyle.Bold;
+                label.style.color = info.IsStopped ? Color.red : Color.yellow;
             };
-            mcList.columns["time"].bindCell = (e, index) =>
+            _summaryMcList.columns["time"].bindCell = (e, index) =>
             {
-                // 1h 23m 32.23s 스타일로!
-                (e as Label).text = clocks[index].Time.ToString("F2");
+                // TODO 1h 23m 32.23s 스타일로!
+                (e as Label).text = ClockDebug.Infos[index].Time.ToString("F2");
             };
-            mcList.columns["delta-time"].bindCell = (e, index) =>
+            _summaryMcList.columns["delta-time"].bindCell = (e, index) =>
             {
-                (e as Label).text = clocks[index].DeltaTime.ToString("F3");
+                (e as Label).text = ClockDebug.Infos[index].DeltaTime.ToString("F3");
             };
-            mcList.columns["time-scale"].bindCell = (e, index) =>
+            _summaryMcList.columns["time-scale"].bindCell = (e, index) =>
             {
-                (e as Label).text = clocks[index].TimeScale.ToString("F1");
+                (e as Label).text = ClockDebug.Infos[index].TimeScale.ToString("F1");
             };
+            _summaryMcList.columns["linked"].bindCell = (e, index) =>
+            {
+                var info = ClockDebug.Infos[index];
+                (e as Label).text = (info.Linked.Count).ToString();
+            };
+        }
+
+        private void ConfigDetailMcList()
+        {
+            var linked = ClockDebug.InfoMap[(ClockType)_detailClockTypeEnumField.value].Linked;
+            
+            _detailMcList.showAlternatingRowBackgrounds = AlternatingRowBackground.All;
+            
+            // itemSource
+            _detailMcList.itemsSource = linked;
+            
+            // makeCell
+            var columnNames = new[] { "linked-type", "position" };
+            foreach (var s in columnNames)
+            {
+                _detailMcList.columns[s].makeCell = () => new Label
+                {
+                    style =
+                    {
+                        unityTextAlign = TextAnchor.MiddleLeft,
+                        height = Length.Percent(100),
+                        paddingLeft = 8f
+                    }
+                };
+            }
+            
+            // bindCell
+            _detailMcList.columns["linked-type"].bindCell = (e, index) =>
+            {
+                (e as Label).text = linked[index].GetType().ToString();
+            };
+            _detailMcList.columns["position"].bindCell = (e, index) =>
+            {
+                (e as Label).text = linked[index].Trace;
+            };
+        }
+
+        private void HookTabEvents()
+        {
+            _tabView.activeTabChanged += (prev, cur) =>
+            {
+                if (cur == _summaryTab)
+                    _activeTabId = TabId.Summary;
+                else if (cur == _clockTypesTab)
+                    _activeTabId = TabId.ClockTypes;
+            };
+
+            var initial = _tabView.activeTab;
+            if (initial == _summaryTab)
+                _activeTabId = TabId.Summary;
+            else if (initial == _clockTypesTab)
+                _activeTabId = TabId.ClockTypes;
+        }
+
+        private void SetupUpdateLoop()
+        {
+            _updateSchedule?.Pause();
+
+            _updateSchedule = rootVisualElement.schedule
+                .Execute(UpdateActiveTab)
+                .Every(100);
+
+
+            return;
+            void UpdateActiveTab()
+            {
+                if (!EditorApplication.isPlaying)
+                    return;
+
+                switch (_activeTabId)
+                {
+                    case TabId.Summary:
+                        _summaryMcList?.RefreshItems();
+                        break;
+                    case TabId.ClockTypes:
+                        Debug.Log("ClockTypes");
+                        break;
+                }
+            }
         }
     }
 }

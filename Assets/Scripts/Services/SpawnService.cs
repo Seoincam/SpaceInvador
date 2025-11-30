@@ -13,7 +13,7 @@ namespace Services
         {
             _assets = assets;
             _pool = pool;
-            _clock = TimeManager.Clocks[ClockType.GamePlay];
+            _clock = TimeManager.GetClock(ClockType.GamePlay);
         }
 
         public GameObject Spawn(string key, Transform parent = null)

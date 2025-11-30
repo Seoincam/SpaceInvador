@@ -11,6 +11,7 @@ namespace TimeKit.Unity.ParticleSystemSupport
         private ClockType _clockType;
 
         internal override ParticleSystem Target => _target;
+        public override ClockType Type => _clockType;
 
         public override void SyncWithClock(IReadOnlyClock clock)
         {
@@ -29,6 +30,8 @@ namespace TimeKit.Unity.ParticleSystemSupport
             _clockType = clockType;
             _target = system;
             _baseSimulationSpeed = system.main.simulationSpeed;
+            
+            TimeManager.GetRealClock(clockType).linked.Register(this);
         }
     }
 }

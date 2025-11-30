@@ -33,8 +33,6 @@ namespace TimeKit
         /// </summary>
         bool IsStopped { get; }
         
-        event Action<IReadOnlyClock> TimeScaleChanged;
-        event Action<IReadOnlyClock> Paused;
-        event Action<IReadOnlyClock> Resumed;
+        event Action<IReadOnlyClock> StateChanged;
     }
 }

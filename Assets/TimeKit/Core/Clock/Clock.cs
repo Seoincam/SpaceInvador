@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
+using TimeKit.Core.Linked;
 
 namespace TimeKit
 {
     [Serializable]
     internal sealed class Clock : IClock
     {
+        internal ClockLinkedGroup linked;
+        
         public double Time { get; private set; }
 
         public float DeltaTime { get; private set; }
@@ -17,9 +21,14 @@ namespace TimeKit
 
         public bool IsStopped => IsPaused || TimeScale <= 0f;
         
-        public event Action<IReadOnlyClock> TimeScaleChanged;
-        public event Action<IReadOnlyClock> Paused;
-        public event Action<IReadOnlyClock> Resumed;
+        public event Action<IReadOnlyClock> StateChanged;
+        
+        internal Clock(ClockType type)
+        {
+            Type = type;
+            TimeScale = 1f;
+            linked = new ClockLinkedGroup(this);
+        }
         
         public void Tick(float unscaledDeltaTime)
         {
@@ -36,20 +45,20 @@ namespace TimeKit
         public void Pause()
         {
             IsPaused = true;
-            Paused?.Invoke(this);
+            StateChanged?.Invoke(this);
         }
 
         public void Resume()
         {
             IsPaused = false;
-            Resumed?.Invoke(this);
+            StateChanged?.Invoke(this);
         }
 
         public void SetTimeScale(float timeScale)
         {
             timeScale = Math.Max(0f, timeScale);
             TimeScale = timeScale;
-            TimeScaleChanged?.Invoke(this);
+            StateChanged?.Invoke(this);
         }
 
         public IDisposable PauseScope() => new PauseToken(this);
@@ -69,12 +78,6 @@ namespace TimeKit
             {
                 if (!_wasPaused) _clock.Resume();
             }
-        }
-
-        public Clock(ClockType type)
-        {
-            Type = type;
-            TimeScale = 1f;
         }
     }
 }

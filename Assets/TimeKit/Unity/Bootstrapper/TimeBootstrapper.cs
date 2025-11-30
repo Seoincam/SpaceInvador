@@ -1,3 +1,4 @@
+using TimeKit.Core.Linked;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.LowLevel;
@@ -27,6 +28,8 @@ namespace TimeKit.Unity.Bootstrapper
             EditorApplication.playModeStateChanged -= OnPlayModeState;
             EditorApplication.playModeStateChanged += OnPlayModeState;
 
+            
+            return;
             static void OnPlayModeState(PlayModeStateChange state)
             {
                 if (state == PlayModeStateChange.ExitingPlayMode)

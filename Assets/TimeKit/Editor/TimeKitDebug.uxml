@@ -1,14 +1,26 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
     <Style src="project://database/Assets/TimeKit/Editor/DebugWindow.uss?fileID=7433441132597879392&amp;guid=effaac82477324d00864be915a50326a&amp;type=3#DebugWindow" />
     <ui:TabView name="timekit-tab-view">
-        <ui:Tab label="Summary" name="summary-tab">
-            <ui:VisualElement name="clocks-mc-list" class="section" style="flex-grow: 1;">
-                <ui:MultiColumnListView name="ClockMcListView" fixed-item-height="25">
+        <ui:Tab label="Summary" name="summary-tab" style="font-size: 13px;">
+            <ui:VisualElement class="section" style="flex-grow: 1;">
+                <ui:MultiColumnListView name="clocks-mc-list" fixed-item-height="27">
                     <ui:Columns>
                         <ui:Column name="clock-type" title="ClockType" width="100px" />
                         <ui:Column name="time" title="Time" width="75px" />
                         <ui:Column name="delta-time" title="Delta Time" width="100px" />
                         <ui:Column name="time-scale" title="Time Scale" width="100px" />
+                        <ui:Column name="linked" title="Linked" width="75px" />
+                    </ui:Columns>
+                </ui:MultiColumnListView>
+            </ui:VisualElement>
+        </ui:Tab>
+        <ui:Tab label="Detail" name="detail-tab">
+            <ui:VisualElement class="section" style="flex-grow: 1;">
+                <ui:EnumField label="Enum" value="Center" type="TimeKit.ClockType, TimeKit.Core" name="clock-type" />
+                <ui:MultiColumnListView name="linked-detail-mc-list">
+                    <ui:Columns>
+                        <ui:Column name="linked-type" title="Linked Type" width="150px" />
+                        <ui:Column name="position" title="Position" width="600px" />
                     </ui:Columns>
                 </ui:MultiColumnListView>
             </ui:VisualElement>

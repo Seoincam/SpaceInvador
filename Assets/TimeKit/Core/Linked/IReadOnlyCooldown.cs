@@ -1,3 +1,5 @@
+using System;
+
 namespace TimeKit
 {
     public interface IReadOnlyCooldown
@@ -6,5 +8,7 @@ namespace TimeKit
         bool IsReady { get; }
         float Remaining { get; }
         float RemainingRatio { get; }
+
+        event Action CooldownEnded;
     }
 }

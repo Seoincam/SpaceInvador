@@ -16,7 +16,7 @@ namespace PlayerController
         
         private void Awake()
         {
-            _clock = TimeManager.Clocks[ClockType.GamePlay];
+            _clock = TimeManager.GetClock(ClockType.GamePlay);
             
             // Controller
             _mover = GetComponent<IPlayerMover>();

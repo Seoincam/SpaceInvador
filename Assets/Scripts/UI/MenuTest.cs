@@ -40,7 +40,7 @@ namespace UI
 
         private void OpenMenu()
         {
-            _pauseToken ??= TimeManager.Clocks[ClockType.GamePlay].PauseScope();
+            _pauseToken ??= TimeManager.GetClock(ClockType.GamePlay).PauseScope();
 
             _canvasGroup.interactable = true;
             _canvasGroup.blocksRaycasts = true;

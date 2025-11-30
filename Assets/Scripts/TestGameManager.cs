@@ -18,7 +18,7 @@ namespace DefaultNamespace
 
         private void Awake()
         {
-            _clock = TimeManager.Clocks[ClockType.GamePlay]
+            _clock = TimeManager.GetClock(ClockType.GamePlay)
                 .SetLink(particle);
         }
         
@@ -79,7 +79,7 @@ namespace DefaultNamespace
         {
             if (_gamePlayClockPauseToken == null)
             {
-                _gamePlayClockPauseToken = TimeManager.Clocks[ClockType.GamePlay].PauseScope();
+                _gamePlayClockPauseToken = TimeManager.GetClock(ClockType.GamePlay).PauseScope();
             }
             else
             {
@@ -93,7 +93,7 @@ namespace DefaultNamespace
         {
             if (_uiClockPauseToken == null)
             {
-                _uiClockPauseToken = TimeManager.Clocks[ClockType.UI].PauseScope();
+                _uiClockPauseToken = TimeManager.GetClock(ClockType.UI).PauseScope();
             }
             else
             {

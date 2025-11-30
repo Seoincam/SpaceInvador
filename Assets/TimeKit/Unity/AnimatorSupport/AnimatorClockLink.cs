@@ -11,6 +11,7 @@ namespace TimeKit.Unity.AnimatorSupport
         private ClockType _clockType;
         
         internal override Animator Target => _target;
+        public override ClockType Type => _clockType;
 
         public override void SyncWithClock(IReadOnlyClock clock)
         {
@@ -28,6 +29,8 @@ namespace TimeKit.Unity.AnimatorSupport
             _clockType = clockType;
             _target = animator;
             _baseSpeed = Target.speed;
+            
+            TimeManager.GetRealClock(clockType).linked.Register(this);
         }
     }
 }

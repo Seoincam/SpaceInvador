@@ -13,6 +13,7 @@ namespace TimeKit.Unity.RigidbodySupport
         private ClockType _clockType;
 
         internal override Rigidbody Target => _target;
+        public override ClockType Type => _clockType;
 
         public override void SyncWithClock(IReadOnlyClock clock)
         {
@@ -39,6 +40,8 @@ namespace TimeKit.Unity.RigidbodySupport
             _clockType = clockType;
             _target = rb;
             CacheVelocity();
+            
+            TimeManager.GetRealClock(clockType).linked.Register(this);
         }
 
         private void CacheVelocity()

@@ -1,16 +1,28 @@
 using System;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using TimeKit.Core.Linked;
 
 namespace TimeKit
 {
     [Serializable]
-    public sealed class Cooldown : IReadOnlyCooldown
+    public sealed class Cooldown : IReadOnlyCooldown, IClockTickLinked, IDisposable
     {
+        public event Action CooldownEnded;
+
+        private readonly Clock _realClock;
         private readonly IClock _clock;
         private float _duration;
         private double _readyAt;
 
-        internal Cooldown(IClock clock, float duration)
+        private bool _isActive;
+        
+#if UNITY_EDITOR
+        public string Trace { get; }
+#endif
+
+        internal Cooldown(IClock clock, float duration,
+            string file, int line, string member)
         {
             _clock = clock ?? throw new ArgumentNullException(nameof(clock));
             if (duration <= 0)
@@ -18,12 +30,36 @@ namespace TimeKit
             
             _duration = duration;
             _readyAt = 0;
+
+            _realClock = TimeManager.GetRealClock(_clock.Type);
+            _realClock.linked.Register(this);
+
+#if UNITY_EDITOR
+            Trace = $"{file}:{line} {member}";
+#endif
         }
 
-        public void Consume()
+        public bool TryConsume()
         {
             Validate();
+            if (!IsReady)
+                return false;
+                
             _readyAt = _clock.Time + _duration;
+            _isActive = true;
+            return true;
+        }
+        
+        public void Tick()
+        {
+            if (!_isActive)
+                return;
+
+            if (IsReady)
+            {
+                _isActive = false;
+                CooldownEnded?.Invoke();
+            }
         }
         
         public float Duration => _duration;
@@ -58,6 +94,11 @@ namespace TimeKit
         public void Reset()
         {
             _readyAt = 0;
+        }
+        
+        public void Dispose()
+        {
+            _realClock.linked.Unregister(this);
         }
         
         [DebuggerHidden]
