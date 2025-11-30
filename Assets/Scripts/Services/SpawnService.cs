@@ -55,7 +55,6 @@ namespace Services
                     instance.transform.rotation = rotation;
                 }
 
-                _clock.Inject(instance);
                 return instance;
             }
             
@@ -69,7 +68,6 @@ namespace Services
             if (_pool is PoolService pool)
                 pool.RegisterNewInstance(prefab, instance);
 
-            _clock.Inject(instance);
             return instance;
         }
     }
