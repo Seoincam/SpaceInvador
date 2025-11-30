@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net.Http;
 using DefaultNamespace;
 using Services;
 using TimeKit;
@@ -40,8 +41,8 @@ namespace PlayerController
         private void Awake()
         {
             _cam = Camera.main;
-
-            _clock = TimeManager.Clocks[ClockType.GamePlay];
+            
+            _clock = TimeManager.GetClock(ClockType.GamePlay);
             _fireCooldown = _clock.Cooldown(cooldownDuration);
             _retrieveCooldown = _clock.Cooldown(cooldownDuration);
             
@@ -80,7 +81,7 @@ namespace PlayerController
                     break;
                 }
             }
-            _retrieveCooldown.Consume();
+            _retrieveCooldown.TryConsume();
         }
         
         public void TakeDamage()
@@ -96,7 +97,7 @@ namespace PlayerController
 
         private void Shoot(Vector2 direction)
         {
-            _fireCooldown.Consume();
+            _fireCooldown.TryConsume();
             
             var bulletGo = GameServices.Spawner.Spawn("Objects/bullet", transform.position);
             if (!bulletGo.TryGetComponent(out IBullet bullet)) 

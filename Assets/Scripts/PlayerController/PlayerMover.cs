@@ -24,8 +24,8 @@ namespace PlayerController
             _rb = GetComponent<Rigidbody2D>();
             _rb.gravityScale = 0;
             _rb.freezeRotation = true;
-
-            _clock = TimeManager.Clocks[ClockType.GamePlay];
+            
+            _clock = TimeManager.GetClock(ClockType.GamePlay);
         }
 
         private void FixedUpdate()

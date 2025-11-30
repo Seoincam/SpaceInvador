@@ -11,7 +11,8 @@ namespace TimeKit.Unity.AudioSourceSupport
         private ClockType _clockType;
         
         internal override AudioSource Target => _target;
-        
+        public override ClockType Type => _clockType;
+
         public override void SyncWithClock(IReadOnlyClock clock)
         {
             if (clock.Type != _clockType || !Target)
@@ -31,6 +32,8 @@ namespace TimeKit.Unity.AudioSourceSupport
             _clockType = clockType;
             _target = audioSource;
             _basePitch = audioSource.pitch;
+            
+            TimeManager.GetRealClock(clockType).linked.Register(this);
         }
     }
 }

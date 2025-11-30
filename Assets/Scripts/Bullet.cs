@@ -40,7 +40,7 @@ namespace DefaultNamespace
             
             _renderer = GetComponent<SpriteRenderer>();
 
-            _clock = TimeManager.Clocks[ClockType.GamePlay];
+            _clock = TimeManager.GetClock(ClockType.GamePlay);
         }
         
         private void OnDisable()

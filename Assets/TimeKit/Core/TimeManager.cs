@@ -5,16 +5,14 @@ namespace TimeKit
 {
     public static class TimeManager
     {
-        private static readonly Dictionary<ClockType, IClock> _clockMap = new();
-
-        public static IReadOnlyDictionary<ClockType, IClock> Clocks => _clockMap;
-
+        private static readonly Dictionary<ClockType, Clock> _clockMap = new();
+        
         public static bool IsInitialized { get; private set; }
         public static event Action Initialized;
 
         internal static event Action Ticked;
 
-        public static void Initialize()
+        internal static void Initialize()
         {
             if (IsInitialized) 
                 return;
@@ -27,11 +25,15 @@ namespace TimeKit
             Initialized?.Invoke();
         }
         
-        public static void Tick(float unscaledDeltaTime)
+        internal static void Tick(float unscaledDeltaTime)
         {
             foreach (var clock in _clockMap.Values)
                 clock.Tick(unscaledDeltaTime);
             Ticked?.Invoke();
         }
+
+        public static IClock GetClock(ClockType type) => GetRealClock(type);
+
+        internal static Clock GetRealClock(ClockType type) => _clockMap[type];
     }
 }

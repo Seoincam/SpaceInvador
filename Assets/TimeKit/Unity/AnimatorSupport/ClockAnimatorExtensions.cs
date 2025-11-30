@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using TimeKit.Unity;
 using TimeKit.Unity.AnimatorSupport;
 using UnityEngine;
