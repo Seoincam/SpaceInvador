@@ -1,5 +1,5 @@
-using TimeKit.Unity;
-using TimeKit.Unity.ParticleSystemSupport;
+using TimeKit.Unity.Link.Core;
+using TimeKit.Unity.Link.Particle;
 using UnityEngine;
 
 namespace TimeKit

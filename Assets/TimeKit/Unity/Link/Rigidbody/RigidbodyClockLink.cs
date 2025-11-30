@@ -1,7 +1,7 @@
-using TimeKit.Unity.Base;
+using TimeKit.Unity.Link.Core;
 using UnityEngine;
 
-namespace TimeKit.Unity.RigidbodySupport
+namespace TimeKit.Unity.Link.Rb
 {
     [AddComponentMenu("")]
     public class RigidbodyClockLink : ClockLinkComponent<Rigidbody>

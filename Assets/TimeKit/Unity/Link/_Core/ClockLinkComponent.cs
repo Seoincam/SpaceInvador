@@ -2,7 +2,7 @@ using System.Diagnostics;
 using TimeKit.Core.Linked;
 using UnityEngine;
 
-namespace TimeKit.Unity.Base
+namespace TimeKit.Unity.Link.Core
 {
     public abstract class ClockLinkComponent<T>: MonoBehaviour, IClockSyncLinked where T : Component
     {

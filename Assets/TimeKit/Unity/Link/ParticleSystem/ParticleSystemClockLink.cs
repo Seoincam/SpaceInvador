@@ -1,7 +1,7 @@
-using TimeKit.Unity.Base;
+using TimeKit.Unity.Link.Core;
 using UnityEngine;
 
-namespace TimeKit.Unity.ParticleSystemSupport
+namespace TimeKit.Unity.Link.Particle
 {
     [AddComponentMenu("")]
     public class ParticleSystemClockLink : ClockLinkComponent<ParticleSystem>

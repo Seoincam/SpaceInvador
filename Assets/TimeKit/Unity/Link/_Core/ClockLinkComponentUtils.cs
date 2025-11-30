@@ -1,7 +1,6 @@
-using TimeKit.Unity.Base;
 using UnityEngine;
 
-namespace TimeKit.Unity
+namespace TimeKit.Unity.Link.Core
 {
     internal static class ClockLinkComponentUtils
     {

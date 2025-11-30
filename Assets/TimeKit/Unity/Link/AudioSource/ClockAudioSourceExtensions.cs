@@ -1,5 +1,5 @@
-using TimeKit.Unity;
-using TimeKit.Unity.AudioSourceSupport;
+using TimeKit.Unity.Link.Audio;
+using TimeKit.Unity.Link.Core;
 using UnityEngine;
 
 namespace TimeKit

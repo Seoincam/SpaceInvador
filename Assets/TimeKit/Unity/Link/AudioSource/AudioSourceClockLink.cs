@@ -1,7 +1,7 @@
-using TimeKit.Unity.Base;
+using TimeKit.Unity.Link.Core;
 using UnityEngine;
 
-namespace TimeKit.Unity.AudioSourceSupport
+namespace TimeKit.Unity.Link.Audio
 {
     [AddComponentMenu("")]
     public class AudioSourceClockLink : ClockLinkComponent<AudioSource>

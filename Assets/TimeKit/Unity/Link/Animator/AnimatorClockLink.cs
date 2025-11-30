@@ -1,7 +1,7 @@
-using TimeKit.Unity.Base;
+using TimeKit.Unity.Link.Core;
 using UnityEngine;
 
-namespace TimeKit.Unity.AnimatorSupport
+namespace TimeKit.Unity.Link.Animation
 {
     [AddComponentMenu("")]
     public class AnimatorClockLink : ClockLinkComponent<Animator>
