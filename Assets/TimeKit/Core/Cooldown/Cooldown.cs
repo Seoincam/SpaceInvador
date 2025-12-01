@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using TimeKit.Core.Linked;
+using UnityEngine;
 
 namespace TimeKit
 {
@@ -9,33 +10,30 @@ namespace TimeKit
     {
         public event Action CooldownEnded;
 
-        private readonly Clock _realClock;
-        private readonly IClock _clock;
+        private readonly Clock _clock;
         private float _duration;
         private double _readyAt;
 
         private bool _isActive;
         
-#if UNITY_EDITOR
-        public string Trace { get; }
-#endif
+        // IClockLinked
+        public ClockType ClockType => _clock.Type;
+        public object Target => this;
+        public GameObject GameObject => null;
 
         internal Cooldown(IClock clock, float duration,
             string file, int line, string member)
         {
-            _clock = clock ?? throw new ArgumentNullException(nameof(clock));
+            if (clock == null)
+                throw new ArgumentNullException(nameof(clock));
             if (duration <= 0)
                 throw new InvalidOperationException("Cooldown duration must be greater than zero.");
             
             _duration = duration;
             _readyAt = 0;
 
-            _realClock = TimeManager.GetRealClock(_clock.Type);
-            _realClock.Linked.Register(this);
-
-#if UNITY_EDITOR
-            Trace = $"{file}:{line} {member}";
-#endif
+            _clock = TimeManager.GetRealClock(clock.Type);
+            _clock.Linked.Register(this);
         }
 
         public bool TryConsume()
@@ -97,7 +95,7 @@ namespace TimeKit
         
         public void Dispose()
         {
-            _realClock.Linked.Unregister(this);
+            _clock.Linked.Unregister(this);
         }
         
         [DebuggerHidden]
@@ -108,5 +106,7 @@ namespace TimeKit
             if (_duration <= 0)
                 throw new InvalidOperationException("Cooldown duration must be greater than zero.");
         }
+
+
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine.UIElements;
 
 namespace TimeKit.Editor.Debugging.Windows
 {
-    public partial class DebugWindow : EditorWindow
+    public sealed partial class DebugWindow : EditorWindow
     {
         /*
          * 추후 Package로 만들면 아래 방법 사용!!
@@ -73,12 +73,8 @@ namespace TimeKit.Editor.Debugging.Windows
             _clockTypesTab = root.Q<Tab>("clock-types-tab");
             _detailTab = root.Q<Tab>("detail-tab");
 
-            var summaryMcList = root.Q<MultiColumnListView>("clocks-mc-list");
-            _summaryTabController = new SummaryTabController(summaryMcList);
-            
-            var detailMcList = root.Q<MultiColumnListView>("linked-detail-mc-list");
-            var detailEnumField = root.Q<EnumField>("clock-type");
-            _detailTabController = new DetailTabController(detailMcList, detailEnumField);
+            _summaryTabController = new SummaryTabController(root);
+            _detailTabController = new DetailTabController(root);
             
             if (!isPlaying)
             {
@@ -88,7 +84,7 @@ namespace TimeKit.Editor.Debugging.Windows
             }
             
             _summaryTabController?.ConfigMcList();
-            _detailTabController?.ConfigMcList();
+            _detailTabController?.Config();
         }
 
         private void HookTabEvents()

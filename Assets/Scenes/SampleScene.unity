@@ -249,7 +249,7 @@ GameObject:
   - component: {fileID: 471361479}
   - component: {fileID: 471361478}
   m_Layer: 0
-  m_Name: Particle System
+  m_Name: My Particle Spawner
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
