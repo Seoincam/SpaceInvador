@@ -18,7 +18,7 @@ namespace TimeKit.Editor.Debugging.Data
 
         internal ClockLinkDebugInfo(IClockLinked linked)
         {
-            TargetType = linked.Target?.GetType().Name ?? "(null)";
+            TargetType = linked.Target?.GetType().Name ?? string.Empty;
 
             var go = linked.GameObject;
             TargetGameObject = go;
@@ -26,15 +26,15 @@ namespace TimeKit.Editor.Debugging.Data
             if (go)
             {
                 var scene = go.scene;
-                SceneName = scene.IsValid() ?scene.name : "-";
+                SceneName = scene.IsValid() ?scene.name : string.Empty;
                 HierarchyPath = BuildHierarchyPath(go.transform);
                 TargetGameObjectName = go.name;
             }
             else
             {
-                SceneName = "-";
-                HierarchyPath = "-";
-                TargetGameObjectName = "-";
+                SceneName = string.Empty;
+                HierarchyPath = string.Empty;
+                TargetGameObjectName = string.Empty;
             }
         }
 

@@ -19,57 +19,79 @@ namespace TimeKit.Editor.Debugging.Windows
             public void ConfigMcList()
             {
                 var infos = ClockDebugManager.Infos;
-                
+            
                 _mcList.showAlternatingRowBackgrounds = AlternatingRowBackground.All;
-                
+            
                 // itemSource
                 _mcList.itemsSource = infos;
-                
+            
                 // makeCell
                 var columnNames = new[] { "clock-type", "time", "delta-time", "time-scale", "linked" };
                 foreach (var name in columnNames)
                 {
-                    _mcList.columns[name].makeCell = () => new Label
+                    _mcList.columns[name].makeCell = () =>
                     {
-                        style =
+                        var label = new Label
                         {
-                            unityTextAlign = TextAnchor.MiddleLeft,
-                            height = Length.Percent(100),
-                            paddingLeft = 8f
-                        }
+                            enableRichText = true
+                        };
+                        label.style.unityTextAlign = TextAnchor.MiddleLeft;
+                        label.style.paddingLeft = 8;
+                        label.style.height = Length.Percent(100);
+                        return label;
                     };
                 }
-                
-                // bindCell
+            
+                // bindCell — CLOCK TYPE
                 _mcList.columns["clock-type"].bindCell = (e, index) =>
                 {
                     var info = infos[index];
-                    var label = e as Label;
-                
-                    label.text = info.Type.ToString();
-                    label.style.unityFontStyleAndWeight = FontStyle.Bold;
-                    label.style.color = info.IsStopped ? Color.red : Color.yellow;
+                    var label = (Label)e;
+            
+                    string color = info.IsStopped ? "#FF6666" : "#FFFFFF";
+            
+                    label.text = $"<b><color={color}>{info.Type}</color></b>";
                 };
-                
+            
+                // bindCell — TIME (formatted 1h 23m 32.23s)
                 _mcList.columns["time"].bindCell = (e, index) =>
                 {
-                    // TODO 1h 23m 32.23s 스타일로!
-                    (e as Label).text = infos[index].Time.ToString("F2");
+                    var info = infos[index];
+                    var label = (Label)e;
+            
+                    string formatted = DebugWindowUtils.FormatClockTime(info.Time);
+            
+                    label.text = $"<b>{formatted}</b>";
                 };
-                
+            
+                // bindCell — DELTA TIME
                 _mcList.columns["delta-time"].bindCell = (e, index) =>
                 {
-                    (e as Label).text = infos[index].DeltaTime.ToString("F3");
+                    var dt = infos[index].DeltaTime;
+                    var label = (Label)e;
+            
+                    label.text = $"Δ {dt:F3}";
                 };
-                
+            
+                // bindCell — TIME SCALE
                 _mcList.columns["time-scale"].bindCell = (e, index) =>
                 {
-                    (e as Label).text = infos[index].TimeScale.ToString("F1");
+                    var scale = infos[index].TimeScale;
+                    var label = (Label)e;
+                    
+                    label.text = $"<color=#C0FFB0>{scale:F1}</color>";
                 };
-                
+            
+                // bindCell — LINKED COUNT
                 _mcList.columns["linked"].bindCell = (e, index) =>
                 {
-                    (e as Label).text = (infos[index].LinkedCount).ToString();
+                    int count = infos[index].LinkedCount;
+                    var label = (Label)e;
+            
+                    string color = count > 0 ? "#80D6FF" : "#777777";
+                    string icon  = count > 0 ? "🔗" : "—";
+            
+                    label.text = $"<color={color}>{icon} {count}</color>";
                 };
             }
 
