@@ -1,9 +1,11 @@
+using UnityEngine;
+
 namespace TimeKit.Core.Linked
 {
     internal interface IClockLinked
     {
-#if UNITY_EDITOR
-        string Trace { get; }  
-#endif
+        ClockType ClockType { get; }
+        object Target { get; }
+        GameObject GameObject { get; }
     }
 }

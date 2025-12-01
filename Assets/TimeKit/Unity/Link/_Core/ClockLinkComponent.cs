@@ -6,6 +6,11 @@ namespace TimeKit.Unity.Link.Core
 {
     public abstract class ClockLinkComponent<T>: MonoBehaviour, IClockSyncLinked where T : Component
     {
+        // IClockLinked
+        public ClockType ClockType => Type;
+        object IClockLinked.Target => Target;
+        public GameObject GameObject => Target.gameObject;
+        
         internal abstract T Target { get; }
         
         public abstract ClockType Type { get; }
