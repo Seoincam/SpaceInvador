@@ -5,7 +5,7 @@ using System.Linq;
 using TimeKit.Core.Linked;
 using UnityEngine;
 
-namespace TimeKit.Editor
+namespace TimeKit.Editor.Debugging.Data
 {
     internal static class ClockDebug
     {

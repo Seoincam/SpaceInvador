@@ -1,9 +1,10 @@
 #if UNITY_EDITOR
+using TimeKit.Editor.Debugging.Data;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace TimeKit.Editor
+namespace TimeKit.Editor.Debugging.Windows
 {
     public class TimeKitDebugWindow : EditorWindow
     {
@@ -13,7 +14,7 @@ namespace TimeKit.Editor
          * https://docs.unity3d.com/kr/2023.2/Manual/UIE-manage-asset-reference.html
          */
         
-        private const string UxmlPath = "Assets/TimeKit/Editor/TimeKitDebug.uxml";
+        private const string UxmlPath = "Assets/TimeKit/Editor/Debug/UI/TimeKitDebug.uxml";
         private VisualTreeAsset _uxml;
 
         private TabView _tabView;
@@ -219,7 +220,6 @@ namespace TimeKit.Editor
                         _summaryMcList?.RefreshItems();
                         break;
                     case TabId.ClockTypes:
-                        Debug.Log("ClockTypes");
                         break;
                 }
             }
