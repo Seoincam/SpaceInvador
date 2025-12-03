@@ -8,7 +8,7 @@ namespace TimeKit.Core.Linked
         internal readonly List<IClockSyncLinked> SyncGroup = new();
         internal readonly List<IClockTickLinked> TickGroup = new();
         
-        internal ClockLinkedGroup(Clock clock)
+        internal ClockLinkedGroup(Clock.Clock clock)
         {
             clock.StateChanged += Sync;
         }

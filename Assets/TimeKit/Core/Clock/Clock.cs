@@ -1,8 +1,8 @@
 using System;
-using System.Collections.Generic;
 using TimeKit.Core.Linked;
+using TimeKit.Core.Save;
 
-namespace TimeKit
+namespace TimeKit.Core.Clock
 {
     [Serializable]
     internal sealed class Clock : IClock
@@ -30,7 +30,7 @@ namespace TimeKit
             Linked = new ClockLinkedGroup(this);
         }
         
-        public void Tick(float unscaledDeltaTime)
+        internal void Tick(float unscaledDeltaTime)
         {
             if (IsStopped)
             {
@@ -78,6 +78,31 @@ namespace TimeKit
             {
                 if (!_wasPaused) _clock.Resume();
             }
+        }
+        
+        
+        // save
+        internal ClockSnapshot CreateSnapshot()
+        {
+            return new ClockSnapshot()
+            {
+                type = Type,
+                time = Time,
+                timeScale = TimeScale,
+                isPaused = IsPaused
+            };
+        }
+        
+        internal void Restore(ClockSnapshot snapshot)
+        {
+            if (snapshot.type != Type)
+                throw new InvalidOperationException($"Clock type mismatch. Expected {Type}, but got {snapshot.type}.");
+            
+            Time = snapshot.time;
+            TimeScale = snapshot.timeScale;
+            IsPaused = snapshot.isPaused;
+            
+            StateChanged?.Invoke(this);
         }
     }
 }
