@@ -2,13 +2,12 @@ using System;
 using TimeKit.Core.Linked;
 using TimeKit.Core.Save;
 
-namespace TimeKit.Core.Clock
+namespace TimeKit
 {
-    [Serializable]
-    internal sealed class Clock : IClock
+    public sealed class Clock : IReadOnlyClock
     {
-        internal ClockLinkedGroup Linked { get; } 
-
+        public ClockType Type { get; }
+        
         public double Time { get; private set; }
 
         public float DeltaTime { get; private set; }
@@ -17,30 +16,9 @@ namespace TimeKit.Core.Clock
 
         public float TimeScale { get; private set; }
 
-        public ClockType Type { get; private set; }
-
         public bool IsStopped => IsPaused || TimeScale <= 0f;
         
         public event Action<IReadOnlyClock> StateChanged;
-        
-        internal Clock(ClockType type)
-        {
-            Type = type;
-            TimeScale = 1f;
-            Linked = new ClockLinkedGroup(this);
-        }
-        
-        internal void Tick(float unscaledDeltaTime)
-        {
-            if (IsStopped)
-            {
-                DeltaTime = 0f;
-                return;
-            }
-
-            DeltaTime = unscaledDeltaTime * TimeScale;
-            Time += DeltaTime;
-        }
 
         public void Pause()
         {
@@ -62,26 +40,29 @@ namespace TimeKit.Core.Clock
         }
 
         public IDisposable PauseScope() => new PauseToken(this);
-
-        private sealed class PauseToken : IDisposable
+        
+        
+        internal ClockLinkedGroup Linked { get; } 
+        
+        internal Clock(ClockType type)
         {
-            private readonly Clock _clock;
-            private readonly bool _wasPaused;
-
-            public PauseToken(Clock clock)
-            {
-                _clock = clock;
-                _wasPaused = clock.IsPaused;
-                clock.Pause();
-            }
-            public void Dispose()
-            {
-                if (!_wasPaused) _clock.Resume();
-            }
+            Type = type;
+            TimeScale = 1f;
+            Linked = new ClockLinkedGroup(this);
         }
         
+        internal void Tick(float unscaledDeltaTime)
+        {
+            if (IsStopped)
+            {
+                DeltaTime = 0f;
+                return;
+            }
+
+            DeltaTime = unscaledDeltaTime * TimeScale;
+            Time += DeltaTime;
+        }
         
-        // save
         internal ClockSnapshot CreateSnapshot()
         {
             return new ClockSnapshot()
@@ -103,6 +84,24 @@ namespace TimeKit.Core.Clock
             IsPaused = snapshot.isPaused;
             
             StateChanged?.Invoke(this);
+        }
+        
+        
+        private sealed class PauseToken : IDisposable
+        {
+            private readonly Clock _clock;
+            private readonly bool _wasPaused;
+
+            public PauseToken(Clock clock)
+            {
+                _clock = clock;
+                _wasPaused = clock.IsPaused;
+                clock.Pause();
+            }
+            public void Dispose()
+            {
+                if (!_wasPaused) _clock.Resume();
+            }
         }
     }
 }

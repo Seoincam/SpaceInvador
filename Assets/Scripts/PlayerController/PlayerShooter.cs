@@ -25,7 +25,7 @@ namespace PlayerController
         [SerializeField] private int maxBulletCount = 4;
         [SerializeField] private float cooldownDuration = .5f;
 
-        private IClock _clock;
+        private Clock _clock;
         private Camera _cam;
         
         private Vector2 _aimInput;

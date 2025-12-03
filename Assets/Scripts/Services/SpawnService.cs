@@ -7,7 +7,7 @@ namespace Services
     {
         private readonly IAssetProvider _assets;
         private readonly IPoolService _pool;
-        private readonly IClock _clock;
+        private readonly Clock _clock;
 
         public SpawnService(IAssetProvider assets, IPoolService pool)
         {

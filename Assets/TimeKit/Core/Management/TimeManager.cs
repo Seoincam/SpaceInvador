@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using TimeKit.Core.Clock;
 using TimeKit.Core.Save;
 using UnityEngine;
 
@@ -13,7 +12,7 @@ namespace TimeKit
         internal static bool IsInitialized { get; private set; }
         internal static event Action Initialized;
 
-        internal static event Action Ticked;
+        public static event Action Ticked;
 
         internal static void Initialize()
         {
@@ -35,10 +34,8 @@ namespace TimeKit
             Ticked?.Invoke();
         }
         
-        internal static Clock GetRealClock(ClockType type) => ClockMap[type];
-
-        public static IClock GetClock(ClockType type) => GetRealClock(type);
-
+        public static Clock GetClock(ClockType type) => ClockMap[type];
+        
         /// <summary>
         /// Captures snapshot data for all registered clocks.
         /// </summary>

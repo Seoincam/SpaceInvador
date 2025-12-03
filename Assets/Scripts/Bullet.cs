@@ -28,7 +28,7 @@ namespace DefaultNamespace
         private Vector2 _direction;
         private Transform _safeArea;
 
-        private IClock _clock;
+        private Clock _clock;
         public bool CanRetrieve { get; private set; }
         public GameObject GameObject => gameObject;
 

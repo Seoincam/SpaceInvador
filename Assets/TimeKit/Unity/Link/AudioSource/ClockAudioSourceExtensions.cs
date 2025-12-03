@@ -9,7 +9,7 @@ namespace TimeKit
         /// <summary>
         /// Links the audio source to the clock.
         /// </summary>
-        public static IClock SetLink(this IClock clock, AudioSource audioSource)
+        public static Clock SetLink(this Clock clock, AudioSource audioSource)
         {
             ClockLinkBinder.Bind<AudioSource, AudioSourceClockLink>(clock.Type, audioSource);
             return clock;
@@ -18,7 +18,7 @@ namespace TimeKit
         /// <summary>
         /// Unlinks the audio source from the clock.
         /// </summary>
-        public static IClock Unlink(this IClock clock, AudioSource audioSource)
+        public static Clock Unlink(this Clock clock, AudioSource audioSource)
         {
             ClockLinkBinder.TryUnbind<AudioSource, AudioSourceClockLink>(clock.Type, audioSource);
             return clock;

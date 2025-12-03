@@ -9,7 +9,7 @@ namespace PlayerController
     {
         [SerializeField] private InputActionAsset inputActions;
 
-        private IClock _clock;
+        private Clock _clock;
         
         private IPlayerMover _mover;
         private IPlayerShooter _shooter;

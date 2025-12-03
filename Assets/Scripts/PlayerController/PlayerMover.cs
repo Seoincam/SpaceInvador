@@ -15,7 +15,7 @@ namespace PlayerController
 
         private const float Bound = 8.5f;
 
-        private IClock _clock;
+        private Clock _clock;
         private Rigidbody2D _rb;
         private Vector2 _moveInput;
 

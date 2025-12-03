@@ -21,12 +21,12 @@ namespace TimeKit.Unity.Link.Rb
             _target = rb;
             CacheVelocity();
             
-            TimeManager.GetRealClock(clockType).Linked.Register(this);
+            TimeManager.GetClock(clockType).Linked.Register(this);
         }
 
         internal override void Unbind()
         {
-            TimeManager.GetRealClock(_clockType).Linked.Unregister(this);
+            TimeManager.GetClock(_clockType).Linked.Unregister(this);
         }
 
         public override void SyncWithClock(IReadOnlyClock clock)

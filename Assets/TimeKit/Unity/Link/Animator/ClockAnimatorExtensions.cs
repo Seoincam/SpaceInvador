@@ -9,7 +9,7 @@ namespace TimeKit
         /// <summary>
         /// Links an animator to the clock.
         /// </summary>
-        public static IClock SetLink(this IClock clock, Animator animator)
+        public static Clock SetLink(this Clock clock, Animator animator)
         {
             ClockLinkBinder.Bind<Animator, AnimatorClockLink>(clock.Type, animator);
             return clock;
@@ -18,7 +18,7 @@ namespace TimeKit
         /// <summary>
         /// Unlinks an animator from the clock.
         /// </summary>
-        public static IClock Unlink(this IClock clock, Animator animator)
+        public static Clock Unlink(this Clock clock, Animator animator)
         {
             ClockLinkBinder.TryUnbind<Animator, AnimatorClockLink>(clock.Type, animator);
             return clock;
@@ -27,7 +27,7 @@ namespace TimeKit
         /// <summary>
         /// Binds the animator to the specified clock.
         /// </summary>
-        public static Animator WithClock(this Animator animator, IClock clock)
+        public static Animator WithClock(this Animator animator, IReadOnlyClock clock)
         {
             ClockLinkBinder.Bind<Animator, AnimatorClockLink>(clock.Type, animator);
             return animator;
@@ -36,7 +36,7 @@ namespace TimeKit
         /// <summary>
         /// Unbinds the animator from the specified clock.
         /// </summary>
-        public static Animator UnlinkClock(this Animator animator, IClock clock)
+        public static Animator UnlinkClock(this Animator animator, IReadOnlyClock clock)
         {
             ClockLinkBinder.TryUnbind<Animator, AnimatorClockLink>(clock.Type, animator);
             return animator;

@@ -9,7 +9,7 @@ namespace TimeKit
         /// <summary>
         /// Links the particle system to the clock.
         /// </summary>
-        public static IClock SetLink(this IClock clock, ParticleSystem particleSystem)
+        public static Clock SetLink(this Clock clock, ParticleSystem particleSystem)
         {
             ClockLinkBinder.Bind<ParticleSystem, ParticleSystemClockLink>(clock.Type, particleSystem);
             return clock;
@@ -18,7 +18,7 @@ namespace TimeKit
         /// <summary>
         /// Unlinks the particle system from the clock.
         /// </summary>
-        public static IClock Unlink(this IClock clock, ParticleSystem particleSystem)
+        public static Clock Unlink(this Clock clock, ParticleSystem particleSystem)
         {
             ClockLinkBinder.TryUnbind<ParticleSystem, ParticleSystemClockLink>(clock.Type, particleSystem);
             return clock;

@@ -18,8 +18,8 @@ namespace UI
         {
             var shooter = player.GetComponent<IPlayerShooter>();
 
-            _fireObserver = shooter.FireCooldown.Observer();
-            _retrieveObserver = shooter.RetrieveCooldown.Observer();
+            _fireObserver = new CooldownObserver(shooter.FireCooldown);
+            _retrieveObserver = new CooldownObserver(shooter.RetrieveCooldown);
             
             _fireObserver.RatioChanged += OnFireCooldownRatioChanged;
             _retrieveObserver.RatioChanged += OnRetrieveCooldownRatioChanged;

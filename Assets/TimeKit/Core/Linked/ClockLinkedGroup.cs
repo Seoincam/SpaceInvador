@@ -13,7 +13,7 @@ namespace TimeKit.Core.Linked
 
         internal event Action<ClockType> Changed;
         
-        internal ClockLinkedGroup(Clock.Clock clock)
+        internal ClockLinkedGroup(Clock clock)
         {
             _clockType = clock.Type;
             clock.StateChanged += Sync;

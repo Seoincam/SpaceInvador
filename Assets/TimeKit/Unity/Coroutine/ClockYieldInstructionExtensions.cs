@@ -45,7 +45,7 @@ namespace TimeKit
 
         public static IEnumerator WaitUntilReady(this CooldownObserver cooldownObserver)
         {
-            yield return cooldownObserver.Cooldown.WaitUntilReady();
+            yield return cooldownObserver.Target.WaitUntilReady();
         }
     }
 }

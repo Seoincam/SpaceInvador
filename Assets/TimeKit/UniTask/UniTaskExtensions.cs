@@ -10,7 +10,7 @@ namespace TimeKit
          /// <summary>
          /// 지정된 <see cref="TimeSpan"/> 동안 <see cref="IClock"/> 기준으로 지연.
          /// </summary>
-         public static async UniTask Delay(this IClock clock, TimeSpan delayTimeSpan, CancellationToken cancellationToken = default)
+         public static async UniTask Delay(this IReadOnlyClock clock, TimeSpan delayTimeSpan, CancellationToken cancellationToken = default)
          {
              var sec = (float)delayTimeSpan.TotalSeconds;
              await clock.Delay(sec, cancellationToken);
@@ -19,7 +19,7 @@ namespace TimeKit
          /// <summary>
          /// 지정된 초 동안 <see cref="IClock"/> 기준으로 지연.
          /// </summary>
-         public static async UniTask Delay(this IClock clock, float seconds, CancellationToken cancellationToken = default)
+         public static async UniTask Delay(this IReadOnlyClock clock, float seconds, CancellationToken cancellationToken = default)
          {
              if (seconds < 0)
                  throw new ArgumentOutOfRangeException("Delay does not allow minus second. second: " + seconds);
@@ -41,7 +41,7 @@ namespace TimeKit
          public static async UniTask WaitUntilReady(this CooldownObserver cooldownObserver,
              CancellationToken cancellationToken = default)
          {
-             await cooldownObserver.Cooldown.WaitUntilReady(cancellationToken);
+             // await cooldownObserver.Cooldown.WaitUntilReady(cancellationToken);
          }
     }
 }

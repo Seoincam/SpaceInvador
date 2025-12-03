@@ -1,6 +1,5 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
-using TimeKit.Core.Clock;
 
 namespace TimeKit.Editor.Debugging.Data
 {
@@ -35,7 +34,7 @@ namespace TimeKit.Editor.Debugging.Data
         
         internal ClockDebugInfo(ClockType type)
         {
-            _clock = TimeManager.GetRealClock(type);
+            _clock = TimeManager.GetClock(type);
         }
     }
 }

@@ -49,7 +49,7 @@ namespace TimeKit.Editor.Debugging.Windows
                 {
                     foreach (ClockType clockType in Enum.GetValues(typeof(ClockType)))
                     {
-                        var clock = TimeManager.GetRealClock(clockType);
+                        var clock = TimeManager.GetClock(clockType);
                         clock.Linked.Changed -= OnLinkedGroupChanged;
                         clock.Linked.Changed += OnLinkedGroupChanged;
                     }

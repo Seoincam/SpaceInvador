@@ -27,7 +27,7 @@ namespace TimeKit.Unity.Link.Core
 
         private void OnDestroy()
         {
-            TimeManager.GetRealClock(Type).Linked.Unregister(this);
+            TimeManager.GetClock(Type).Linked.Unregister(this);
         }
 
         public string Trace

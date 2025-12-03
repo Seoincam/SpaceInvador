@@ -1,18 +1,10 @@
-using System.Runtime.CompilerServices;
-
 namespace TimeKit
 {
     public static class ClockExtensions
     {
-        public static Cooldown Cooldown(this IClock clock, float duration,
-            [CallerFilePath] string file = "", [CallerLineNumber] int line = 0, [CallerMemberName] string member = "")
+        public static Cooldown Cooldown(this IReadOnlyClock clock, float duration)
         {
-            return new Cooldown(clock, duration, file, line, member);
-        }
-
-        public static CooldownObserver Observer(this IReadOnlyCooldown cooldown)
-        {
-            return new CooldownObserver(cooldown);
+            return new Cooldown(clock, duration);
         }
     }
 }

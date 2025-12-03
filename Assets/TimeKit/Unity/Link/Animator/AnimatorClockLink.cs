@@ -19,12 +19,12 @@ namespace TimeKit.Unity.Link.Animation
             _target = animator;
             _baseSpeed = Target.speed;
             
-            TimeManager.GetRealClock(clockType).Linked.Register(this);
+            TimeManager.GetClock(clockType).Linked.Register(this);
         }
 
         internal override void Unbind()
         {
-            TimeManager.GetRealClock(_clockType).Linked.Unregister(this);
+            TimeManager.GetClock(_clockType).Linked.Unregister(this);
         }
 
         public override void SyncWithClock(IReadOnlyClock clock)

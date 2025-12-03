@@ -14,7 +14,7 @@ namespace DefaultNamespace
         private IDisposable _gamePlayClockPauseToken;
         private IDisposable _uiClockPauseToken;
 
-        private IClock _clock;
+        private Clock _clock;
 
         private void Awake()
         {
