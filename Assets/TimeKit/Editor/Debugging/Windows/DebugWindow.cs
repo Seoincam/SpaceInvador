@@ -74,6 +74,7 @@ namespace TimeKit.Editor.Debugging.Windows
             _detailTab = root.Q<Tab>("detail-tab");
 
             _summaryTabController = new SummaryTabController(root);
+            _summaryTabController.ClockRowChosen += OnClockRowChosen;
             _detailTabController = new DetailTabController(root);
             
             if (!isPlaying)
@@ -134,6 +135,12 @@ namespace TimeKit.Editor.Debugging.Windows
                         break;
                 }
             }
+        }
+        
+        private void OnClockRowChosen(ClockType type)
+        {
+            _detailTabController.OnClockRowChosen(type);
+            _tabView.activeTab = _detailTab;
         }
     }
 }

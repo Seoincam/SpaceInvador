@@ -1,6 +1,7 @@
 #if UNITY_EDITOR
 using System.Collections.Generic;
 using TimeKit.Editor.Debugging.Data;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -51,7 +52,6 @@ namespace TimeKit.Editor.Debugging.Windows
                 
                 _clockTypeEnum.RegisterValueChangedCallback(evt =>
                 {
-                    Debug.Log("Changed clock type: " + evt.newValue);
                     UpdateClockInfo((ClockType)evt.newValue);
                     UpdateLinkedInfo();
                 });
@@ -127,6 +127,7 @@ namespace TimeKit.Editor.Debugging.Windows
             private void ConfigLinkedMcList()
             {
                 _linkedMcList.showAlternatingRowBackgrounds = AlternatingRowBackground.All;
+                _linkedMcList.selectionType = SelectionType.Single;
                 
                 // itemSource
                 _linkedMcList.itemsSource = _linkedInfoSource;
@@ -152,7 +153,6 @@ namespace TimeKit.Editor.Debugging.Windows
                     var info = _linkedInfoSource[index];
                     var label = (Label)e;
 
-                    // ⭐ 아이콘 + 색상 + 강조
                     var color = info.TargetGameObject ? "#FFD800" : "#80D6FF";
                     var icon  = info.TargetGameObject ? "📦" : "⚙️";
 
@@ -170,7 +170,7 @@ namespace TimeKit.Editor.Debugging.Windows
                     }
                     else
                     {
-                        label.text = $"<color=#C0FFB0>🧩 {info.TargetGameObjectName}</color>";
+                        label.text = $"<color=#C0FFB0>{info.TargetGameObjectName}</color>";
                     }
                 };
 
@@ -185,7 +185,7 @@ namespace TimeKit.Editor.Debugging.Windows
                     }
                     else
                     {
-                        label.text = $"<color=#87CEFA>📄 {scene}</color>";
+                        label.text = $"<color=#87CEFA>{scene}</color>";
                     }
                 };
                 
@@ -200,9 +200,24 @@ namespace TimeKit.Editor.Debugging.Windows
                     }
                     else
                     {
-                        label.text = $"<color=#AAAAAA>📍</color> <color=#CCCCCC>{path}</color>";
+                        label.text = $"<color=#AAAAAA></color> <color=#CCCCCC>{path}</color>";
                     }
                 };
+                
+                // 더블클릭 시 Hierarchy 선택 + Ping
+                _linkedMcList.itemsChosen += OnLinkedRowChosen;
+            }
+
+            private void OnLinkedRowChosen(IEnumerable<object> chosenItems)
+            {
+                foreach (var item in chosenItems)
+                {
+                    if (item is ClockLinkDebugInfo info && info.TargetGameObject)
+                    {
+                        Selection.activeGameObject = info.TargetGameObject;
+                        EditorGUIUtility.PingObject(info.TargetGameObject);
+                    }
+                }
             }
 
             private void UpdateClockInfo(ClockType clockType)
@@ -223,6 +238,13 @@ namespace TimeKit.Editor.Debugging.Windows
             public void Refresh()
             {
                 _clockMcList.RefreshItems();
+            }
+
+            public void OnClockRowChosen(ClockType type)
+            {
+                _clockTypeEnum.value = type;
+                UpdateClockInfo(type);
+                UpdateLinkedInfo();
             }
         }
     }

@@ -1,4 +1,6 @@
 #if UNITY_EDITOR
+using System;
+using System.Collections.Generic;
 using TimeKit.Editor.Debugging.Data;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -11,6 +13,8 @@ namespace TimeKit.Editor.Debugging.Windows
         {
             private readonly MultiColumnListView _mcList;
 
+            public event Action<ClockType> ClockRowChosen;
+
             public SummaryTabController(VisualElement root)
             {
                 _mcList = root.Q<MultiColumnListView>("clocks-mc-list");
@@ -18,9 +22,10 @@ namespace TimeKit.Editor.Debugging.Windows
 
             public void ConfigMcList()
             {
-                var infos = ClockDebugManager.Infos;
-            
                 _mcList.showAlternatingRowBackgrounds = AlternatingRowBackground.All;
+                _mcList.selectionType = SelectionType.Single;
+                
+                var infos = ClockDebugManager.Infos;
             
                 // itemSource
                 _mcList.itemsSource = infos;
@@ -53,7 +58,7 @@ namespace TimeKit.Editor.Debugging.Windows
                     label.text = $"<b><color={color}>{info.Type}</color></b>";
                 };
             
-                // bindCell — TIME (formatted 1h 23m 32.23s)
+                // bindCell — TIME 
                 _mcList.columns["time"].bindCell = (e, index) =>
                 {
                     var info = infos[index];
@@ -93,11 +98,23 @@ namespace TimeKit.Editor.Debugging.Windows
             
                     label.text = $"<color={color}>{icon} {count}</color>";
                 };
+                
+                // 더블클릭 시 detail view로 이동
+                _mcList.itemsChosen += OnClockRowChosen;
             }
 
             public void Refresh()
             {
                 _mcList?.RefreshItems();
+            }
+
+            private void OnClockRowChosen(IEnumerable<object> chosenItems)
+            {
+                foreach (var item in chosenItems)
+                {
+                    if (item is ClockDebugInfo info)
+                        ClockRowChosen?.Invoke(info.Type);
+                }
             }
         }
     }

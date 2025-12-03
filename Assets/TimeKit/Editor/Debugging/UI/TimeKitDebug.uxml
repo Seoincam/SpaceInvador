@@ -47,7 +47,7 @@
                             <ui:Column name="target-type" title="&lt;b&gt;Type&lt;/b&gt;" min-width="100px" width="125px" />
                             <ui:Column name="game-object" title="&lt;color=#C0FFB0&gt;🧩 GameObject&lt;/color&gt;" width="160px" />
                             <ui:Column name="scene-name" title="&lt;color=#87CEFA&gt;📄 Scene&lt;/color&gt;" width="125px" />
-                            <ui:Column name="hierarchy-path" title="&lt;color=#AAAAAA&gt;📍&lt;/color&gt; &lt;color=#CCCCCC&gt;Hierarchy Path&lt;/color&gt;" width="250px" />
+                            <ui:Column name="hierarchy-path" title="&lt;color=#AAAAAA&gt;📍&lt;/color&gt; &lt;color=#CCCCCC&gt;Hierarchy Path&lt;/color&gt;" width="350px" />
                         </ui:Columns>
                     </ui:MultiColumnListView>
                 </ui:VisualElement>
