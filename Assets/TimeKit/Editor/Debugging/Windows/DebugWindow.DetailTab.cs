@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using TimeKit.Editor.Debugging.Data;
 using UnityEditor;
@@ -11,6 +12,8 @@ namespace TimeKit.Editor.Debugging.Windows
     {
         private sealed class DetailTabController
         {
+            private ClockType _currentClockType;
+            
             // pane1
             private readonly EnumField _clockTypeEnum;
             
@@ -41,18 +44,29 @@ namespace TimeKit.Editor.Debugging.Windows
                 ConfigClockMcList();
                 ConfigRefreshButton();
                 ConfigLinkedMcList();
+
+                if (EditorApplication.isPlaying)
+                {
+                    foreach (ClockType clockType in Enum.GetValues(typeof(ClockType)))
+                    {
+                        var clock = TimeManager.GetRealClock(clockType);
+                        clock.Linked.Changed -= OnLinkedGroupChanged;
+                        clock.Linked.Changed += OnLinkedGroupChanged;
+                    }
+                }
             }
 
             private void ConfigEnumField()
             {
-                var initialType = ClockType.GamePlay;
-                _clockTypeEnum.Init(initialType);
-                UpdateClockInfo(initialType);
+                _currentClockType = ClockType.GamePlay;
+                _clockTypeEnum.Init(_currentClockType);
+                UpdateClockInfo(_currentClockType);
                 UpdateLinkedInfo();
                 
                 _clockTypeEnum.RegisterValueChangedCallback(evt =>
                 {
-                    UpdateClockInfo((ClockType)evt.newValue);
+                    _currentClockType = (ClockType)evt.newValue;
+                    UpdateClockInfo(_currentClockType);
                     UpdateLinkedInfo();
                 });
             }
@@ -244,6 +258,13 @@ namespace TimeKit.Editor.Debugging.Windows
             {
                 _clockTypeEnum.value = type;
                 UpdateClockInfo(type);
+                UpdateLinkedInfo();
+            }
+
+            private void OnLinkedGroupChanged(ClockType clockType)
+            {
+                if (_currentClockType != clockType)
+                    return;
                 UpdateLinkedInfo();
             }
         }
