@@ -8,7 +8,8 @@ namespace TimeKit
         bool IsReady { get; }
         float Remaining { get; }
         float RemainingRatio { get; }
-
+        
         event Action CooldownEnded;
+        event Action<IReadOnlyCooldown> Disposed;
     }
 }

@@ -43,6 +43,22 @@ namespace PlayerController
             _cam = Camera.main;
             
             _clock = TimeManager.GetClock(ClockType.GamePlay);
+
+            if (_clock != null)
+            {
+                Debug.Log("Clock found");
+            }
+
+            if (_clock is IReadOnlyClock rc1)
+            {
+                Debug.Log("IReadOnly Clock found");
+            }
+
+            if (_clock is not IReadOnlyClock rc)
+            {
+                Debug.LogWarning("PlayerShooter: clock is not IReadOnlyClock");
+            }
+            
             _fireCooldown = _clock.Cooldown(cooldownDuration);
             _retrieveCooldown = _clock.Cooldown(cooldownDuration);
             

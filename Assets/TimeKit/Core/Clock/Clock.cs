@@ -74,14 +74,14 @@ namespace TimeKit
             };
         }
         
-        internal void Restore(ClockSnapshot snapshot)
+        internal void Restore(ClockSnapshot data)
         {
-            if (snapshot.type != Type)
-                throw new InvalidOperationException($"Clock type mismatch. Expected {Type}, but got {snapshot.type}.");
+            if (data.type != Type)
+                throw new InvalidOperationException($"Clock type mismatch. Expected {Type}, but got {data.type}.");
             
-            Time = snapshot.time;
-            TimeScale = snapshot.timeScale;
-            IsPaused = snapshot.isPaused;
+            Time = data.time;
+            TimeScale = data.timeScale;
+            IsPaused = data.isPaused;
             
             StateChanged?.Invoke(this);
         }

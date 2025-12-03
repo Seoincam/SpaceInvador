@@ -14,7 +14,7 @@ namespace UI
         private CooldownObserver _fireObserver;
         private CooldownObserver _retrieveObserver;
         
-        private void Awake()
+        private void Start()
         {
             var shooter = player.GetComponent<IPlayerShooter>();
 

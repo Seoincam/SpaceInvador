@@ -22,13 +22,26 @@ namespace TimeKit
         public void SetTarget(IReadOnlyCooldown cooldown)
         {
             ThrowIfDisposed();
+
+            if (ReferenceEquals(Target, cooldown))
+                return;
+
+            if (Target != null)
+                Target.Disposed -= OnTargetDisposed;
+            
             Target = cooldown ?? throw new ArgumentNullException(nameof(cooldown));
+            Target.Disposed += OnTargetDisposed;
             _lastRemaining = float.NaN;
         }
 
         public void ClearTarget()
         {
             ThrowIfDisposed();
+
+            if (Target == null)
+                return;
+            
+            Target.Disposed -= OnTargetDisposed;
             Target = null;
             _lastRemaining = float.NaN;
         }
@@ -61,6 +74,16 @@ namespace TimeKit
             }
             
             RatioChanged?.Invoke(ratio);
+        }
+        
+        private void OnTargetDisposed(IReadOnlyCooldown disposedTarget)
+        {
+            if (!ReferenceEquals(Target, disposedTarget))
+                return;
+
+            Target.Disposed -= OnTargetDisposed;
+            Target = null;
+            _lastRemaining = float.NaN;
         }
 
         private void ThrowIfDisposed()

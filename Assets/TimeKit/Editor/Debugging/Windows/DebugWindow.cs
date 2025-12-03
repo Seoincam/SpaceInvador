@@ -79,8 +79,8 @@ namespace TimeKit.Editor.Debugging.Windows
             
             if (!isPlaying)
             {
-                var help = new HelpBox("Play Mode에서만 TimeKit 상태를 볼 수 있습니다.", HelpBoxMessageType.Info);
-                root.Add(help);
+                // var help = new HelpBox("Play Mode에서만 TimeKit 상태를 볼 수 있습니다.", HelpBoxMessageType.Info);
+                // root.Add(help);
                 return;
             }
             

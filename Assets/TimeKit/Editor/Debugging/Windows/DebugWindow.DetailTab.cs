@@ -180,7 +180,7 @@ namespace TimeKit.Editor.Debugging.Windows
 
                     if (info.TargetGameObjectName == string.Empty)
                     {
-                        label.text = "<color=#999999><i>— no object —</i></color>";
+                        label.text = "<color=#999999><i>—</i></color>";
                     }
                     else
                     {
@@ -210,7 +210,7 @@ namespace TimeKit.Editor.Debugging.Windows
 
                     if (path == string.Empty)
                     {
-                        label.text = "<color=#777777><i>— no hierarchy —</i></color>";
+                        label.text = "<color=#777777><i>—</i></color>";
                     }
                     else
                     {
